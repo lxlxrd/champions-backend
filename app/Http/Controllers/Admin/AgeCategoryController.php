@@ -16,7 +16,7 @@ class AgeCategoryController extends Controller
     {
         //
         $categories =  AgeCategory::with('admin')->get();
-        return view('admin.age-categories.index', compact('categories'))->with('success', 'Category retrieved successfully.');
+        return view('new.admin.age-category.list', compact('categories'))->with('success', 'Category retrieved successfully.');
     }
 
     /**

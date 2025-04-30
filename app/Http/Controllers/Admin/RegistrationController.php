@@ -20,7 +20,7 @@ class RegistrationController extends Controller
     {
         //  retourne la vue de la liste des joueurs inscrits
         $registrations = Registration::with(['player', 'parent', 'season', 'age_category'])->get();
-        return view('admin.registrations.index', compact('registrations'));
+        return view('new.admin.registration.list', compact('registrations'));
     }
 
     public function create()

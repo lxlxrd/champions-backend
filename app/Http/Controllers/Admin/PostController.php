@@ -19,22 +19,23 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $type = $request->type; // PUB ou GALLERY
+        $files = Storage::disk('public')->files('posts');
 
         $seasons = Season::orderByDesc('year')->get();
         $posts = Post::with('seasons')
-            ->when($type, fn($q) => $q->where('type', $type))
+            // ->when($type, fn($q) => $q->where('type', $type))
 
-            ->when(request('season_id'), function ($q, $seasonId) {
-                return $q->whereHas(
-                    'seasons',
-                    fn($qb) =>
-                    $qb->where('seasons.id', $seasonId)
-                );
-            })
-            ->orderByDesc('created_at')
+            // ->when(request('season_id'), function ($q, $seasonId) {
+            //     return $q->whereHas(
+            //         'seasons',
+            //         fn($qb) =>
+            //         $qb->where('seasons.id', $seasonId)
+            //     );
+            // })
+            // ->orderByDesc('created_at')
             ->paginate(10);   // <-- pagination
 
-        return view('admin.posts.index', compact('posts', 'seasons'));
+        return view('new.admin.post.list', compact('posts', 'files', 'seasons'));
     }
 
     /**

@@ -67,44 +67,6 @@ class AdminController extends Controller
         ));
     }
 
-    public function test()
-    {
-        // Nombre total de posts
-        $totalPosts = Post::count();
-
-        // Nombre de saisons non archivée (is_archived = false)
-        $activeSeasons = Season::where('active', true)->count();
-
-        // Nombre d'inscriptions en attente (isValidated = false)
-        $pendingRegistrations = Registration::where('status', 'pending')->count();
-
-        // Nombre total d'admins
-        $totalAdmins = Admin::count();
-
-        $galleryPosts = Post::where('type', 'GALERY')
-            ->whereNotNull('image_path')
-            ->orderByDesc('created_at')
-            ->take(8)
-            ->get();
-
-        // Récupère les 8 derniers posts de type PUB (publications)
-        $publicationPosts = Post::where('type', 'PUBLICATION')
-            ->whereNotNull('image_path')
-            ->orderByDesc('created_at')
-            ->take(8)
-            ->get();
-
-
-        // On passe toutes ces variables à la vue
-        return view('admin.dashboard', compact(
-            'totalPosts',
-            'activeSeasons',
-            'pendingRegistrations',
-            'totalAdmins',
-            'galleryPosts',
-            'publicationPosts'
-        ));
-    }
 
     /**
      * Store a newly created resource in storage.

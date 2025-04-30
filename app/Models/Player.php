@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Services\AgeCategoryService;
 use App\Services\SeasonService;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Auth;
@@ -86,4 +87,12 @@ class Player extends Model
             ]);
         });
     }
+
+    public function fullName(): Attribute 
+	{
+		return Attribute::make(get: fn() => $this->getAttribute('last_name') . ' ' . $this->getAttribute('first_name'));
+	}
+
+    
+
 }

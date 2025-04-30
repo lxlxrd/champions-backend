@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class PlayerParent extends Model
@@ -19,4 +20,9 @@ class PlayerParent extends Model
     public function players(){
         return $this->hasMany(Player::class);  
     }
+
+    public function fullName(): Attribute 
+	{
+		return Attribute::make(get: fn() => $this->getAttribute('last_name') . ' ' . $this->getAttribute('first_name'));
+	}
 }

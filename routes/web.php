@@ -34,33 +34,11 @@ Route::middleware('auth:admin')
           Route::get('/', [AdminController::class, 'dashboard'])
                ->name('home');
 
-               Route::get('/test', [AdminController::class, 'test'])
-               ->name('test');
 
-          // CRUD posts → "admin.posts.index", etc.
-          Route::resource('posts', AdminPostController::class)
-               ->names('posts');
-
-
-
-          Route::resource('age_categories', AdminAgeCategoryController::class)
-               ->names('age-categories');
-
-
-
-          Route::resource('players', AdminPlayerController::class)->names('players');
-
-
-          // Route::resource('seasons', AdminSeasonController::class)->names("seasons")->except(['show']);;
-          // Route::post('seasons/{season}/archive', [AdminSeasonController::class, 'archive'])
-          //      ->name('seasons.archive');
-
-          // Route::get('seasons/archived', [AdminSeasonController::class, 'archived'])
-          //      ->name('seasons.archived');
 
           Route::controller(AdminSeasonController::class)
                ->prefix('seasons')
-               ->name('seasons.')
+               ->name('season.')
                ->group(function () {
                     Route::get('list', 'index')->name('index');
                     Route::get('archived', 'archived')->name('archived');
@@ -68,7 +46,48 @@ Route::middleware('auth:admin')
                });
 
 
+          /**
+           *  CRUD age-categories → "admin.age-categories .
+           */
+
+          Route::controller(AdminAgeCategoryController::class)
+               ->prefix('age-categories')
+               ->name('age-category.')
+               ->group(function () {
+                    Route::get('list', 'index')->name('index');
+               });
+
+
+
+
+          Route::controller(AdminRegistrationController::class)
+               ->prefix('registrations')
+               ->name('registration.')
+               ->group(function () {
+                    Route::get('list', 'index')->name('index');
+                    Route::get('archived', 'archived')->name('archived');
+                    Route::post('{registration}/archive', 'archive')->name('archive');
+               });
+
+
+          Route::controller(AdminPlayerController::class)
+               ->prefix('players')
+               ->name('player.')
+               ->group(function () {
+                    Route::get('list', 'index')->name('index');
+               });
+
+
+          Route::controller(AdminPostController::class)
+               ->prefix('posts')
+               ->name('post.')
+               ->group(function () {
+                    Route::get('list', 'index')->name('index');
+               });
+
+          // Route::controller(AdminPostController::class)
           // CRUD registrations → "admin.registrations.index", etc.
+
           Route::resource('registrations', AdminRegistrationController::class)
                ->names('registrations');
 
