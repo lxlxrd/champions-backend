@@ -11,7 +11,7 @@ class SeasonController extends Controller
     /* ───────────────────────────────── INDEX ─────────────────────────────── */
     public function index(Request $request)
     {
-        $seasons = Season::orderByDesc('year')->with('registrations.parent', 'registrations.player')->get()
+        $seasons = Season::orderBy('year')->with('registrations.parent', 'registrations.player')->get()
             ->map(function ($season) {
                 // Compter les joueurs distincts
                 $season->distinct_players = $season->registrations
@@ -44,23 +44,23 @@ class SeasonController extends Controller
     {
         $data = $request->validate([
             'year'   => 'required|integer|digits:4|unique:seasons,year',
-            'active' => 'sometimes|boolean',   // présent uniquement si la case est cochée
+            'active' => 'required|boolean',   // présent uniquement si la case est cochée
+            'start' => 'required|string',   // présent uniquement si la case est cochée
+            'end' => 'required|string',   // présent uniquement si la case est cochée
         ]);
 
 
-        // Si on coche "active", on désactive d'abord toutes les autres saisons
-        $makeActive = $request->has('active');
-        if ($makeActive) {
-            Season::where('active', true)->update(['active' => false]);
-        }
+
 
         Season::create([
             'year'   => $data['year'],
-            'active' => $request->has('active'),   // true si checkbox cochée
+            'active' => $request->has('active'),
+            'start' => $data['start'],  
+            'end' => $data['end']  
         ]);
 
         return redirect()
-            ->route('admin.seasons.index')
+            ->route('admin.season.index')
             ->with('success', 'Season created successfully.');
     }
 
@@ -75,28 +75,27 @@ class SeasonController extends Controller
     public function update(Request $request, string $id)
     {
         $season = Season::findOrFail($id);
-
+        
         $data = $request->validate([
             'year'   => 'required|integer|digits:4|unique:seasons,year,' . $season->id,
             'active' => 'sometimes|boolean',
+            'start' => 'required|string',  // true si checkbox cochée
+            'end' => 'required|string',  // true si checkbox cochée
         ]);
-
-        $makeActive = $request->has('active');
-        if ($makeActive) {
-            // Désactive toutes les autres saisons
-            Season::where('active', true)
-                ->where('id', '<>', $season->id)
-                ->update(['active' => false]);
-        }
-
-
+        
+        
+        
+        
         $season->update([
             'year'   => $data['year'],
-            'active' => $request->has('active'),
+            'active' => $request->input('active'),
+            'start' => $data['start'],  // true si checkbox cochée
+            'end' => $data['end'] 
         ]);
+        // dd($data['active']);
 
         return redirect()
-            ->route('admin.seasons.index')
+            ->route('admin.season.index')
             ->with('success', 'Season updated successfully.');
     }
 

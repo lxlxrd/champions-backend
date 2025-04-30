@@ -9,7 +9,9 @@ class Season extends Model
     protected $fillable = [
         'name',
         'year',
-        'active'
+        'active',
+        'start',
+        'end',
     ];
     //
 

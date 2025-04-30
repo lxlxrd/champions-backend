@@ -104,7 +104,7 @@
                     </a>
                     <ul class="pc-submenu">
                         <li class="pc-item"><a class="pc-link" href="{{route('admin.registrations.index')}}">List</a></li>
-                        <li class="pc-item"><a class="pc-link" href="../dashboard/analytics.html">Add</a></li>
+                        {{-- <li class="pc-item"><a class="pc-link" href="../dashboard/analytics.html">Add</a></li> --}}
                     </ul>
                 </li>
 
@@ -120,7 +120,7 @@
                     </a>
                     <ul class="pc-submenu">
                         <li class="pc-item"><a class="pc-link" href="{{route('admin.player.index')}}">List</a></li>
-                        <li class="pc-item"><a class="pc-link" href="../dashboard/analytics.html">Add</a></li>
+                        {{-- <li class="pc-item"><a class="pc-link" href="../dashboard/analytics.html">Add</a></li> --}}
                     </ul>
                 </li>
 

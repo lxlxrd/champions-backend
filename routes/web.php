@@ -43,6 +43,8 @@ Route::middleware('auth:admin')
                     Route::get('list', 'index')->name('index');
                     Route::get('archived', 'archived')->name('archived');
                     Route::post('{season}/archive', 'archive')->name('archive');
+                    Route::post('', 'store')->name('store');
+                    Route::put('{id}', 'update')->name('update');
                });
 
 
