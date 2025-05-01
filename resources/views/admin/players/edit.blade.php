@@ -52,7 +52,7 @@
 
         <div class="flex justify-end space-x-2">
             <x-nav-link 
-                href="{{ route('admin.players.index') }}" 
+                href="{{ route('admin.player.index') }}" 
                 icon="arrow-left" 
                 iconPosition="left" 
                 class="bg-gray-600 hover:bg-gray-700">

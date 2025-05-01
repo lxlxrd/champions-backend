@@ -57,12 +57,14 @@ Route::middleware('auth:admin')
                ->name('age-category.')
                ->group(function () {
                     Route::get('list', 'index')->name('index');
+                    Route::post('', [AdminAgeCategoryController::class, 'store'])->name('store');
+                    Route::put('{id}', 'update')->name('update');
                });
 
 
 
 
-          Route::controller(AdminRegistrationController::class)
+          Route::controller(AdmiwnRegistrationController::class)
                ->prefix('registrations')
                ->name('registration.')
                ->group(function () {

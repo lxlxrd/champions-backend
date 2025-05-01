@@ -56,7 +56,7 @@ class PlayerController extends Controller
         }
 
         Player::create($data);
-        return redirect()->route('admin.players.index')->with('success', 'Player created successfully.');
+        return redirect()->route('admin.player.index')->with('success', 'Player created successfully.');
     }
 
     /**
@@ -67,7 +67,7 @@ class PlayerController extends Controller
         //
         $player = Player::with('parent')->find($player->id);
         if (!$player) {
-            return redirect()->route('admin.players.index')->with('error', 'Player not found.');
+            return redirect()->->with('error', 'Player not found.');
         }
 
         //
@@ -114,7 +114,7 @@ class PlayerController extends Controller
 
         // 4) Redirection avec message de succès
         return redirect()
-            ->route('admin.players.index')
+            ->route('admin.player.index')
             ->with('success', 'Player updated succesfully.');
     }
 

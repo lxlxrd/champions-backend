@@ -48,7 +48,7 @@
 
     {{-- Actions --}}
     <div class="mt-8 flex justify-end space-x-4">
-        <x-nav-link href="{{ route('admin.players.index') }}" icon="arrow-left" iconPosition="left" class="bg-gray-200 text-gray-800 hover:bg-gray-300">
+        <x-nav-link href="{{ route('admin.player.index') }}" icon="arrow-left" iconPosition="left" class="bg-gray-200 text-gray-800 hover:bg-gray-300">
             Back
         </x-nav-link>
         <x-nav-link href="{{ route('admin.players.edit', $player) }}" icon="edit" iconPosition="left" class="bg-blue-600 text-white hover:bg-blue-700">

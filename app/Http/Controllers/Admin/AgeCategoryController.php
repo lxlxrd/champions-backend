@@ -44,7 +44,7 @@ class AgeCategoryController extends Controller
         ]);
 
         AgeCategory::create($request->all());
-        return redirect()->route('admin.age-categories.index')->with('success', 'Category created successfully.');
+        return redirect()->route('admin.age-category.index')->with('success', 'Category created successfully.');
     }
 
     /**
@@ -75,7 +75,7 @@ class AgeCategoryController extends Controller
             'name' => 'required|string',
             'min_age' => 'required|integer|min:0',
             'max_age' => 'required|integer|gt:min_age',
-            'admin_id' => 'required|exists:admins,id',
+            // 'admin_id' => 'required|exists:admins,id',
         ]);
 
         // Trouver la catégorie par ID
@@ -86,11 +86,11 @@ class AgeCategoryController extends Controller
             'name' => $request->name,
             'min_age' => $request->min_age,
             'max_age' => $request->max_age,
-            'admin_id' => $request->admin_id,
+            // 'admin_id' => $request->admin_id,
         ]);
 
         // Rediriger avec un message de succès
-        return redirect()->route('admin.age-categories.index')->with('success', 'Category updated successfully.');
+        return redirect()->route('admin.age-category.index')->with('success', 'Category updated successfully!');
     }
 
 
