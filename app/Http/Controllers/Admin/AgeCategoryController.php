@@ -102,6 +102,6 @@ class AgeCategoryController extends Controller
         $category = AgeCategory::findOrFail($id);
         $category->delete();
 
-        return redirect()->route('admin.age-categories.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('admin.age-category.index')->with('success', 'Category deleted successfully.');
     }
 }

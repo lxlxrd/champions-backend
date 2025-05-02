@@ -18,8 +18,34 @@
             vertical-align: middle;
         }
 
+
+            {
+                {
+                -- animation poureffet fluide --
+            }
+        }
+
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+        }
+
     </style>
 </head>
+
+
+{{-- message de feedback --}}
+@if(session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
+
+@if(session('error'))
+<div class="alert alert-danger">
+    {{ session('error') }}
+</div>
+@endif
+
 
 @extends('layouts.new.app', [
 'breadcrumbs' => [['name' => 'Administration', 'url' => 'admin.home'],
@@ -75,8 +101,14 @@
                                             </li>
 
                                             {{-- Delete --}}
-                                            <li class="list-inline-item" data-bs-toggle="tooltip" title="Delete">
+                                            {{-- <li class="list-inline-item" data-bs-toggle="tooltip" title="Delete">
                                                 <a href="#" class="avtar avtar-xs btn-link-danger btn-pc-default d-inline-flex align-items-center justify-content-center">
+                                                    <i class="ti ti-trash f-18"></i>
+                                                </a>
+                                            </li> --}}
+
+                                            <li class="list-inline-item" data-bs-toggle="tooltip" title="Delete">
+                                                <a href="#" class="avtar avtar-xs btn-link-danger btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" data-id="{{ $category->id }}" data-action="{{ route('admin.age-category.destroy', $category->id) }}">
                                                     <i class="ti ti-trash f-18"></i>
                                                 </a>
                                             </li>
@@ -130,6 +162,33 @@
                         </div>
                     </div> {{-- /modal --}}
 
+
+
+                    {{-- Modal pour supression  --}}
+
+                    <!-- Modal de confirmation de suppression -->
+                    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Confirm Deletion</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure to delete this category ?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form id="deleteForm" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -151,6 +210,19 @@
     $('#res-config').DataTable({
         responsive: true
     });
+
+    // Gestion de la suppression
+    const deleteModal = document.getElementById('deleteConfirmationModal');
+    const deleteForm = document.getElementById('deleteForm');
+
+    deleteModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        deleteForm.action = button.getAttribute('data-action');
+    });
+
+
+
+
 
     // Formulaire : Création ou édition
     const form = document.getElementById('ageCategoryForm');
