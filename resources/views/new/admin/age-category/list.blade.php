@@ -29,6 +29,20 @@
             transition: transform 0.3s ease-out;
         }
 
+            {
+                {
+                -- utilisé dans le modal du show --
+            }
+        }
+
+        .form-control-static {
+            padding: 0.375rem 0.75rem;
+            background-color: #f8f9fa;
+            border-radius: 0.25rem;
+            display: block;
+            width: 100%;
+        }
+
     </style>
 </head>
 
@@ -86,9 +100,16 @@
                                 <td class="text-center align-middle">
                                     <div class="d-flex justify-content-center">
                                         <ul class="list-inline mb-0">
-                                            {{-- View --}}
-                                            <li class="list-inline-item" data-bs-toggle="tooltip" title="View">
+                                            {{-- Show --}}
+                                            {{-- <li class="list-inline-item" data-bs-toggle="tooltip" title="View">
                                                 <a href="#" class="avtar avtar-xs btn-link-secondary btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#cust-modal">
+                                                    <i class="ti ti-eye f-18"></i>
+                                                </a>
+                                            </li> --}}
+
+
+                                            <li class="list-inline-item" data-bs-toggle="tooltip" title="View">
+                                                <a href="#" class="avtar avtar-xs btn-link-secondary btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#showCategoryModal" data-name="{{ $category->name }}" data-min_age="{{ $category->min_age }}" data-max_age="{{ $category->max_age }}">
                                                     <i class="ti ti-eye f-18"></i>
                                                 </a>
                                             </li>
@@ -189,6 +210,39 @@
                         </div>
                     </div>
 
+
+
+                    <!-- Modal pour afficher les détails -->
+                    <div class="modal fade" id="showCategoryModal" tabindex="-1" aria-labelledby="showCategoryModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="showCategoryModalLabel">Category details</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Name:</label>
+                                        <p id="show-name" class="form-control-static"></p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Min Age:</label>
+                                        <p id="show-min-age" class="form-control-static"></p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Max Age:</label>
+                                        <p id="show-max-age" class="form-control-static"></p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                 </div>
             </div>
         </div>
@@ -220,6 +274,23 @@
         deleteForm.action = button.getAttribute('data-action');
     });
 
+
+
+    // Show 
+    const showModal = document.getElementById('showCategoryModal');
+    showModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+
+        // Mise à jour du titre du modal avec le nom de la catégorie 
+        // si le nom est  'Adulte' le titre sera 'Détails: Adulte'
+        // showCategoryModalLabel id du titre du modal on affecte au texte du titre Deatils: + le nom de la catégorie
+        document.getElementById('showCategoryModalLabel').textContent = `Details: ${button.getAttribute('data-name')}`;
+
+        // Remplissage des données
+        document.getElementById('show-name').textContent = button.getAttribute('data-name');
+        document.getElementById('show-min-age').textContent = button.getAttribute('data-min_age');
+        document.getElementById('show-max-age').textContent = button.getAttribute('data-max_age');
+    });
 
 
 
