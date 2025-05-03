@@ -72,7 +72,6 @@
                     </a>
                     <ul class="pc-submenu">
                         <li class="pc-item"><a class="pc-link" href="{{route('admin.season.index')}}">List</a></li>
-                        <li class="pc-item"><a class="pc-link" href="../dashboard/analytics.html">Add</a></li>
                     </ul>
                 </li>
 
@@ -88,7 +87,6 @@
                     </a>
                     <ul class="pc-submenu">
                         <li class="pc-item"><a class="pc-link" href="{{route('admin.age-category.index')}}">List</a></li>
-                        <li class="pc-item"><a class="pc-link" href="../dashboard/analytics.html">Add</a></li>
                     </ul>
                 </li>
 
