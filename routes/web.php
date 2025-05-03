@@ -45,6 +45,8 @@ Route::middleware('auth:admin')
                     Route::post('{season}/archive', 'archive')->name('archive');
                     Route::post('', 'store')->name('store');
                     Route::put('{id}', 'update')->name('update');
+                    Route::delete('/season/{id}', [AdminSeasonController::class, 'destroy'])
+                         ->name('destroy');
                });
 
 

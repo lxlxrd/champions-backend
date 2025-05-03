@@ -1,5 +1,4 @@
 <head>
-    <!-- ... autres balises ... -->
     <style>
         .list-inline-item .avtar {
             display: inline-flex;
@@ -19,21 +18,13 @@
         }
 
 
-            {
-                {
-                -- animation poureffet fluide --
-            }
-        }
-
+        //-- animation poureffet fluide --
         .modal.fade .modal-dialog {
             transition: transform 0.3s ease-out;
         }
 
-            {
-                {
-                -- utilisé dans le modal du show --
-            }
-        }
+
+        //-- utilisé dans le modal du show --
 
         .form-control-static {
             padding: 0.375rem 0.75rem;
@@ -101,12 +92,6 @@
                                     <div class="d-flex justify-content-center">
                                         <ul class="list-inline mb-0">
                                             {{-- Show --}}
-                                            {{-- <li class="list-inline-item" data-bs-toggle="tooltip" title="View">
-                                                <a href="#" class="avtar avtar-xs btn-link-secondary btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#cust-modal">
-                                                    <i class="ti ti-eye f-18"></i>
-                                                </a>
-                                            </li> --}}
-
 
                                             <li class="list-inline-item" data-bs-toggle="tooltip" title="View">
                                                 <a href="#" class="avtar avtar-xs btn-link-secondary btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#showCategoryModal" data-name="{{ $category->name }}" data-min_age="{{ $category->min_age }}" data-max_age="{{ $category->max_age }}">
@@ -120,13 +105,6 @@
                                                     <i class="ti ti-edit-circle f-18"></i>
                                                 </a>
                                             </li>
-
-                                            {{-- Delete --}}
-                                            {{-- <li class="list-inline-item" data-bs-toggle="tooltip" title="Delete">
-                                                <a href="#" class="avtar avtar-xs btn-link-danger btn-pc-default d-inline-flex align-items-center justify-content-center">
-                                                    <i class="ti ti-trash f-18"></i>
-                                                </a>
-                                            </li> --}}
 
                                             <li class="list-inline-item" data-bs-toggle="tooltip" title="Delete">
                                                 <a href="#" class="avtar avtar-xs btn-link-danger btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" data-id="{{ $category->id }}" data-action="{{ route('admin.age-category.destroy', $category->id) }}">

@@ -55,8 +55,8 @@ class SeasonController extends Controller
         Season::create([
             'year'   => $data['year'],
             'active' => $request->has('active'),
-            'start' => $data['start'],  
-            'end' => $data['end']  
+            'start' => $data['start'],
+            'end' => $data['end']
         ]);
 
         return redirect()
@@ -75,22 +75,22 @@ class SeasonController extends Controller
     public function update(Request $request, string $id)
     {
         $season = Season::findOrFail($id);
-        
+
         $data = $request->validate([
             'year'   => 'required|integer|digits:4|unique:seasons,year,' . $season->id,
             'active' => 'sometimes|boolean',
             'start' => 'required|string',  // true si checkbox cochée
             'end' => 'required|string',  // true si checkbox cochée
         ]);
-        
-        
-        
-        
+
+
+
+
         $season->update([
             'year'   => $data['year'],
             'active' => $request->input('active'),
             'start' => $data['start'],  // true si checkbox cochée
-            'end' => $data['end'] 
+            'end' => $data['end']
         ]);
         // dd($data['active']);
 
@@ -123,7 +123,7 @@ class SeasonController extends Controller
         Season::findOrFail($id)->delete();
 
         return redirect()
-            ->route('admin.seasons.index')
+            ->route('admin.season.index')
             ->with('success', 'Season deleted successfully.');
     }
 }

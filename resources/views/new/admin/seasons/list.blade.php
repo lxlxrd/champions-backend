@@ -1,3 +1,42 @@
+<head>
+    <style>
+        .list-inline-item .avtar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+        }
+
+        .avtar-xs {
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+        }
+
+        #res-config td {
+            vertical-align: middle;
+        }
+
+
+        //-- animation poureffet fluide --
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+        }
+
+
+        //-- utilisé dans le modal du show --
+
+        .form-control-static {
+            padding: 0.375rem 0.75rem;
+            background-color: #f8f9fa;
+            border-radius: 0.25rem;
+            display: block;
+            width: 100%;
+        }
+
+    </style>
+</head>
+
 @extends('layouts.new.app', [
 'breadcrumbs' => [['name' => 'Administration', 'url' => 'admin.home'],
 ['name' => 'Manage Season', 'url' => null], ['name' => 'Season lists', 'url' => null]],
@@ -30,7 +69,7 @@
                         <tbody>
                             @foreach($seasons as $season)
                             <tr>
-                            {{-- @dd($season->active) --}}
+                                {{-- @dd($season->active) --}}
                                 <td>{{$season->year}}</td>
                                 <td> {{ $season->distinct_players }}
                                 </td>
@@ -45,24 +84,30 @@
                                     <span class="text-red-600 font-medium">Archived</span>
                                     @endif
                                 </td>
-                                <td class="text-center">
-                                    <ul class="list-inline me-auto mb-0">
-                                        <li class="list-inline-item" data-bs-toggle="tooltip" title="View">
-                                            <a href="#" class="avtar avtar-xs btn-link-secondary btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#showSeasonModal" data-name="{{ $season->year }}" data-active="{{ $season->active }}" data-start="{{ $season->start }}" data-end="{{ $season->end }}" data-parent="{{ $season->distinct_parents }}" data-player="{{ $season->distinct_players }}">
-                                                <i class="ti ti-eye f-18"></i>
-                                            </a>
-                                        </li>
-                                        <li class="list-inline-item align-bottom" data-bs-toggle="tooltip" title="Edit">
-                                            <button class="btn btn-link-success p-1" data-bs-toggle="modal" data-bs-target="#seasonModal" data-mode="edit" data-id="{{ $season->id }}" data-year="{{ $season->year }}" data-active="{{ $season->active ? '1':'0' }}" data-end="{{ $season->end }}" data-start="{{ $season->start }}">
-                                                <i class="ti ti-edit-circle f-18"></i>
-                                            </button>
-                                        </li>
-                                        <li class="list-inline-item align-bottom" data-bs-toggle="tooltip" title="Delete">
-                                            <a href="#" class="avtar avtar-xs btn-link-danger btn-pc-default">
-                                                <i class="ti ti-trash f-18"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
+                                <td class="text-center align-middle">
+                                    <div class="d-flex justify-content-center">
+                                        <ul class="list-inline mb-0">
+                                            <li class="list-inline-item" data-bs-toggle="tooltip" title="View">
+
+                                                <a href="#" class="avtar avtar-xs btn-link-secondary btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#showSeasonModal" data-name="{{ $season->year }}" data-active="{{ $season->active }}" data-start="{{ $season->start }}" data-end="{{ $season->end }}" data-parent="{{ $season->distinct_parents }}" data-player="{{ $season->distinct_players }}">
+                                                    <i class="ti ti-eye f-18"></i>
+                                                </a>
+                                            </li>
+
+                                            <li class="list-inline-item" data-bs-toggle="tooltip" title="Edit">
+
+                                                <a href="#" class="avtar avtar-xs btn-link-success btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#seasonModal" data-mode="edit" data-id="{{ $season->id }}" data-year="{{ $season->year }}" data-active="{{ $season->active ? '1':'0' }}" data-end="{{ $season->end }}" data-start="{{ $season->start }}">
+                                                    <i class="ti ti-edit-circle f-18"></i>
+                                                </a>
+                                            </li>
+
+                                            <li class="list-inline-item" data-bs-toggle="tooltip" title="Delete">
+                                                <a href="#" class="avtar avtar-xs btn-link-danger btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" data-id="{{ $season->id }}" data-action="{{ route('admin.season.destroy', $season->id) }}">
+                                                    <i class="ti ti-trash f-18"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach
@@ -168,6 +213,30 @@
 
 
 
+                        {{-- Modal pour delete --}}
+                        <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirm Deletion</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure to delete this season ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <form id="deleteForm" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
@@ -247,6 +316,22 @@
     });
 
 
+
+
+    //{{-- Script pour le delete --}}
+
+    const deleteModal = document.getElementById('deleteConfirmationModal');
+    const deleteForm = document.getElementById('deleteForm');
+
+    deleteModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        deleteForm.action = button.getAttribute('data-action');
+    });
+
+
+
+
+    //{{-- Pour le create et le edit  --}}
     const seasonModal = document.getElementById('seasonModal');
     seasonModal.addEventListener('show.bs.modal', event => {
         const btn = event.relatedTarget;
