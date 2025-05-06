@@ -1,3 +1,28 @@
+<head>
+    <style>
+        /* Style pour la prévisualisation de l'image */
+        #imagePreview {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            display: block;
+        }
+
+        /* Style pour les types de posts */
+        .form-check {
+            margin-bottom: 10px;
+        }
+
+        /* Adaptation pour les petits écrans */
+        @media (max-width: 768px) {
+            .modal-dialog {
+                margin: 0.5rem auto;
+            }
+        }
+
+    </style>
+</head>
+
 @php
 use Illuminate\Support\Facades\Storage;
 @endphp
@@ -21,27 +46,17 @@ use Illuminate\Support\Facades\Storage;
                                 <li class="list-inline-item">
                                     <div class="form-search">
                                         <i class="ti ti-search"></i>
-                                        <input type="search" class="form-control" placeholder="Search Products" />
+                                        <input type="search" class="form-control" placeholder="Search Post" />
                                     </div>
                                 </li>
                             </ul>
                             <ul class="list-inline ms-auto my-1">
-                                <li class="list-inline-item">
-                                    <select class="form-select">
-                                        <option>Price: High To Low</option>
-                                        <option>Price: Low To High</option>
-                                        <option>Popularity</option>
-                                        <option>Discount</option>
-                                        <option>Fresh Arrivals</option>
-                                    </select>
-                                </li>
                                 <li class="list-inline-item align-bottom">
-                                    <a href="#" class="d-inline-flex d-xxl-none btn btn-link-secondary align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvas_mail_filter">
-                                        <i class="ti ti-filter f-16"></i> Filter
-                                    </a>
-                                    <a href="#" class="d-none d-xxl-inline-flex btn btn-link-secondary align-items-center" data-bs-toggle="collapse" data-bs-target="#ecom-filter">
-                                        <i class="ti ti-filter f-16"></i> Filter
-                                    </a>
+                                    <div class="d-flex justify-content-end mb-3">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postModal">
+                                            <i class="ti ti-plus"></i> New Post
+                                        </button>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -63,36 +78,253 @@ use Illuminate\Support\Facades\Storage;
                                 </div>
                                 <div class="btn-prod-cart card-body position-absolute end-0 bottom-0">
                                     <div class="btn btn-warning">
-                                        <svg class="pc-icon">
-                                            <use xlink:href="#custom-bag"></use>
-                                        </svg>
+                                        <a href="#" class="avtar avtar-xs btn-link-danger btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#deletePostModal" data-id="{{ $post->id }}" data-action="{{ route('admin.post.destroy', $post->id) }}">
+                                            <i class="ti ti-trash f-18"></i>
+                                        </a>
+
                                     </div>
                                 </div>
                             </div>
-                            {{-- <div class="card-img-top h-64 overflow-hidden rounded-lg">
-                                <img src="{{Storage::url($post->image_path)}}" alt="{{ $post->title }}" class="w-full h-full object-cover" style="width: 100%; height: 200px; object-fit: cover;" />
-                        </div> --}}
-                        <div class="card-body ">
-                            <a href="../application/ecom_product-details.html">
-                                <p class="prod-content mb-0 text-muted"> {{ $post->type }}</p>
-                            </a>
-                            <div class="d-flex align-items-center justify-content-between mt-2">
-                                <h4 class="mb-0 text-truncate"><b> {{ $post->title }}</b></h4>
-                                <div class="prod-color">
-                                    <span class="bg-success"></span>
-                                    <span class="bg-dark"></span>
-                                </div>
-                            </div>
 
+                            <div class="card-body ">
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <h4 class="mb-0 text-truncate"><b> {{ $post->title }}</b></h4>
+
+                                    <div class="btn-prod-cart card-body position-absolute end-0 bottom-0">
+                                        <div class="btn border-t-green-400">
+                                            {{-- <a href="#" class="avtar avtar-xs btn-link-success btn-pc-default d-inline-flex align-items-center justify-content-center">
+                                                <i class="ti ti-edit-circle f-18"></i>
+                                            </a> --}}
+
+                                            <a href="#" class="edit-post-btn" data-bs-toggle="modal" data-bs-target="#postModal" data-mode="edit" data-id="{{ $post->id }}" data-action="{{ route('admin.post.update', $post->id) }}" data-title="{{ $post->title }}" data-content="{{ $post->content }}" data-type="{{ $post->type }}" data-image="{{ $post->image_path ? Storage::url($post->image_path) : '' }}">
+                                                <i class="ti ti-edit-circle f-18"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
+
+
+
+                <!-- Modal d'ajout et d'édit -->
+                <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="postModalLabel">New Post</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form id="postForm" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="_method" id="formMethod" value="POST">
+                                <input type="hidden" name="id" id="postId" value="">
+                                <div class="modal-body">
+                                    <!-- Type de Post -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Type </label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="type" id="typeGallery" value="GALERY" checked>
+                                            <label class="form-check-label" for="typeGallery">
+                                                Galery
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="type" id="typePublication" value="PUBLICATION">
+                                            <label class="form-check-label" for="typePublication">
+                                                Publication
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Image -->
+                                    <div class="mb-3">
+                                        <label for="postImage" class="form-label">Image</label>
+                                        <input class="form-control" type="file" id="postImage" name="image_path" accept="image/jpeg,image/png,image/webp">
+                                        <small class="text-muted">Format: JPEG, PNG, WEBP (max 2MB)</small>
+                                    </div>
+
+                                    {{-- @error('image_path')
+                                    <div class="text-danger">{{ $message }}
+                                </div>
+                                @enderror --}}
+
+                                <!-- Titre -->
+                                <div class="mb-3">
+                                    <label for="postTitle" class="form-label">Title</label>
+                                    <input type="text" class="form-control" id="postTitle" name="title" placeholder="Enter the title" required>
+                                </div>
+
+                                <!-- Contenu -->
+                                <div class="mb-3">
+                                    <label for="postContent" class="form-label">Content</label>
+                                    <textarea class="form-control" id="postContent" name="content" rows="5" placeholder="Post content..." required></textarea>
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Publish</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            {{-- Modal de suppression  --}}
+
+
+            <div class="modal fade" id="deletePostModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Deletion</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete this post?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form id="deletePostForm" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                         </div>
                     </div>
                 </div>
-
-                @endforeach
             </div>
+
+
         </div>
     </div>
 </div>
 <!-- [ sample-page ] end -->
 </div>
+
+@endsection
+
+
+@section('script')
+
+<script>
+    // Gestion de la suppression d'un post
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const deletePostModal = document.getElementById('deletePostModal');
+        const deletePostForm = document.getElementById('deletePostForm');
+
+        deletePostModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const action = button.getAttribute('data-action');
+            deletePostForm.action = action;
+        });
+    });
+
+
+
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const postModal = document.getElementById('postModal');
+        const form = document.getElementById('postForm');
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.id = 'formMethod';
+        form.appendChild(methodInput);
+
+        const postIdInput = document.createElement('input');
+        postIdInput.type = 'hidden';
+        postIdInput.name = 'id';
+        postIdInput.id = 'postId';
+        form.appendChild(postIdInput);
+
+        // Création du conteneur de prévisualisation
+        const imagePreviewContainer = document.createElement('div');
+        imagePreviewContainer.id = 'imagePreviewContainer';
+        document.getElementById('postImage').parentNode.appendChild(imagePreviewContainer);
+
+        // Gestion de l'ouverture du modal
+        postModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const isEdit = button && button.getAttribute('data-mode') === 'edit';
+
+            if (isEdit) {
+                // Mode Édition
+                form.action = button.getAttribute('data-action');
+                methodInput.value = 'PUT';
+                postIdInput.value = button.getAttribute('data-id');
+                document.getElementById('postModalLabel').textContent = 'Edit Post';
+
+                // Remplir les champs
+                document.getElementById('postTitle').value = button.getAttribute('data-title');
+                document.getElementById('postContent').value = button.getAttribute('data-content');
+
+                // Sélectionner le type
+                const postType = button.getAttribute('data-type');
+                document.getElementById(postType === 'PUBLICATION' ? 'typePublication' : 'typeGallery').checked = true;
+
+                // Afficher l'image actuelle
+                const imageUrl = button.getAttribute('data-image');
+                if (imageUrl && imageUrl !== 'storage/') {
+                    imagePreviewContainer.innerHTML = `
+        <img src="${imageUrl}" class="img-fluid rounded mt-2" style="max-height: 200px;">
+        <div class="form-text">Current image</div>
+    `;
+                } else {
+                    imagePreviewContainer.innerHTML = '<div class="form-text text-muted">No image available</div>';
+                }
+            } else {
+                // Mode Création
+                form.action = "{{ route('admin.post.store') }}";
+                methodInput.value = 'POST';
+                postIdInput.value = '';
+                document.getElementById('postModalLabel').textContent = 'New Post';
+
+                // Réinitialiser le formulaire
+                form.reset();
+                imagePreviewContainer.innerHTML = '';
+                document.getElementById('typeGallery').checked = true;
+            }
+        });
+
+        // Prévisualisation de l'image
+        document.getElementById('postImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreviewContainer.innerHTML = `
+<img src="${e.target.result}" class="img-fluid rounded mt-2" style="max-height: 200px;">
+<div class="form-text">New image preview</div>
+`;
+                };
+                reader.readAsDataURL(file);
+            } else if (postIdInput.value) {
+                // Réafficher l'image originale si annulation en mode édition
+                const button = document.querySelector(`[data-id="${postIdInput.value}"]`);
+                const imageUrl = button.getAttribute('data-image');
+                if (imageUrl) {
+                    imagePreviewContainer.innerHTML = `
+<img src="${imageUrl}" class="img-fluid rounded mt-2" style="max-height: 200px;">
+<div class="form-text">Current image</div>
+`;
+                }
+            }
+        });
+    });
+
+</script>
+
 @endsection

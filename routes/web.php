@@ -91,10 +91,11 @@ Route::middleware('auth:admin')
                ->name('post.')
                ->group(function () {
                     Route::get('list', 'index')->name('index');
+                    Route::post('', 'store')->name('store');
+                    Route::put('{id}', [AdminPostController::class, 'update'])->name('update');  // Utilisation de PUT pour les modifications
+                    Route::delete('{id}', 'destroy')->name('destroy');
                });
 
-          // Route::controller(AdminPostController::class)
-          // CRUD registrations → "admin.registrations.index", etc.
 
           Route::resource('registrations', AdminRegistrationController::class)
                ->names('registrations');

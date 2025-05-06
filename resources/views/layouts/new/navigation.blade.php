@@ -135,7 +135,7 @@
                     </a>
                     <ul class="pc-submenu">
                         <li class="pc-item"><a class="pc-link" href="{{route('admin.post.index')}}">List</a></li>
-                        <li class="pc-item"><a class="pc-link" href="../dashboard/analytics.html">Add</a></li>
+                        {{-- <li class="pc-item"><a class="pc-link" href="../dashboard/analytics.html">Add</a></li> --}}
                     </ul>
                 </li>
 

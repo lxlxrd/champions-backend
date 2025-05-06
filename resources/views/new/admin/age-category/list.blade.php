@@ -68,7 +68,7 @@
                 <div class="d-flex justify-content-between mb-3">
                     <h5 class="card-title">List of categories</h5>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAgeCategoryModal">
-                        <i class="ti ti-plus"></i> Add
+                        <i class="ti ti-plus"></i> New Age Category
                     </button>
                 </div>
                 <div class="dt-responsive">

@@ -50,20 +50,20 @@
             <div class="card-body">
                 <div class="d-flex justify-content-end mb-3">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#seasonModal" data-mode="create">
-                        New Season
+                        <i class="ti ti-plus"></i> New Season
                     </button>
                 </div>
                 <div class="dt-responsive">
                     <table id="res-config" class="display table table-striped table-hover dt-responsive nowrap" style="width: 100%">
                         <thead>
                             <tr>
-                                <th>Year</th>
-                                <th>Parent</th>
-                                <th>Player</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Status</th>
-                                <th class="text-center">Action</th>
+                                <th>YEAR</th>
+                                <th>PARENT</th>
+                                <th>PLAYER</th>
+                                <th>START</th>
+                                <th>END</th>
+                                <th>STATUS</th>
+                                <th class="text-center">ACTION</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -114,14 +114,13 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Year</th>
-                                <th>Parent</th>
-                                <th>Player</th>
-                                <th>Action</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Status</th>
-
+                                <th>YEAR</th>
+                                <th>PARENT</th>
+                                <th>PLAYER</th>
+                                <th>START</th>
+                                <th>END</th>
+                                <th>STATUS</th>
+                                <th class="text-center">ACTION</th>
                             </tr>
                         </tfoot>
                     </table>

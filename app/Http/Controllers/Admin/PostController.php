@@ -18,21 +18,14 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
+        // phpinfo();
+
         $type = $request->type; // PUB ou GALLERY
         $files = Storage::disk('public')->files('posts');
 
         $seasons = Season::orderByDesc('year')->get();
         $posts = Post::with('seasons')
-            // ->when($type, fn($q) => $q->where('type', $type))
 
-            // ->when(request('season_id'), function ($q, $seasonId) {
-            //     return $q->whereHas(
-            //         'seasons',
-            //         fn($qb) =>
-            //         $qb->where('seasons.id', $seasonId)
-            //     );
-            // })
-            // ->orderByDesc('created_at')
             ->paginate(10);   // <-- pagination
 
         return view('new.admin.post.list', compact('posts', 'files', 'seasons'));
@@ -54,46 +47,37 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        // 1) Validation des champs
-        $request->validate([
-            'title'   => 'required|string|max:255|unique:Posts,title',
-            'content' => 'nullable|string|unique:Posts,content',
-            'type'    => 'required|in:GALERY,PUBLICATION',
-            'image'   => 'required|image|mimes:jpg,jpeg,png,gif,svg,webp|max:2048',
-            // 'season'  => 'nullable|integer|exists:seasons,id',
+        // dd($request->all());
+        $validated = $request->validate([
+            'title' => 'required|string|max:255|unique:posts,title',
+            'content' => 'required|string',
+            'type' => 'required|in:GALERY,PUBLICATION',
+            'image_path' => 'required|image|mimes:jpeg,png,webp',
         ]);
 
-        // 2) Stockage du fichier image
-        // stocke dans storage/app/public/posts et retourne le chemin relatif
-        $path = $request->file('image')
-            ->store('posts', 'public');
+        // Stockage de l'image
 
-        // 3) Création du post en base
+        $imagePath = $request->file('image_path')->store('posts', 'public');
+
+        // Création du post
         $post = Post::create([
-            'title'   => $request->title,
-            'content' => $request->content,
-            'type'    => $request->type,
-            'image_path'   => $path,
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'type' => $validated['type'],
+            'image_path' => $imagePath,
         ]);
 
+        // Association à la saison courante
         $season = app(SeasonService::class)->current();
-        if (!$season) {
-            // pas de saison active : on sort
-            return;
+        if ($season) {
+            $post->seasons()->attach($season->id, [
+                'admin_id' => Auth::id(),
+                'date' => now()
+            ]);
         }
 
-        // 4) Association à la saison choisie (si fournie)
-        // if ($request->filled('season')) {
-        $post->seasons()->attach($season, [
-            'admin_id' => Auth::user()->id,
-            'date'     => now(),
-        ]);
-        // }
-
-        // 5) Redirection avec message de succès
-        return redirect()
-            ->route('admin.posts.index')
-            ->with('success', 'Post created succesfully.');
+        return redirect()->route('admin.post.index')
+            ->with('success', 'Post created successfully.');
     }
 
 
@@ -128,54 +112,58 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, $id) // Changez Post $post en $id pour matcher la route
     {
-        $request->validate([
-            'title'   => 'required|string|max:255|unique:Posts,title',
-            'content' => 'nullable|string|unique:Posts,content',
-            'type'     => 'required|in:GALERY,PUB',
-            'image_path'    => 'nullable|image|mimes:jpg,jpeg,png,gif,svg,webp|max:2048',
-            // 'season'  => 'nullable|integer|exists:seasons,id',
+        // dd($request->all());
+        // 1) Récupération du post
+
+        $post = Post::findOrFail($id);
+
+        // 2) Validation des champs
+        $validated = $request->validate([
+            'title' => 'required|string|max:255|unique:posts,title,' . $post->id,
+            'content' => 'required|string',
+            'type' => 'required|in:GALERY,PUBLICATION',
+            'image_path' => 'nullable|image|mimes:jpeg,png,webp',
+            // 'image_path' => 'nullable|image|mimes:jpeg,png,webp|max:4096',
         ]);
 
-        // Si nouvelle image → on supprime l’ancienne + on stocke la nouvelle
+        // 3) Gestion de l'image
         if ($request->hasFile('image_path')) {
-            Storage::disk('public')->delete($post->image);
-            $post->image_path = $request->file('image_path')->store('posts', 'public');
+            // Supprimer l'ancienne image si elle existe
+            if ($post->image_path) {
+                Storage::disk('public')->delete($post->image_path);
+            }
+            // Stocker la nouvelle image
+            $validated['image_path'] = $request->file('image_path')->store('posts', 'public');
         }
 
-        // Mise à jour des champs simples
-        $post->update([
-            'title'   => $request->title,
-            'content' => $request->content,
-            'type'    => $request->type,
-            // 'season' => $request->season
-        ]);
+        // 4) Mise à jour du post
+        $post->update($validated);
 
+        // 5) Mise à jour de la relation avec la saison
         $season = app(SeasonService::class)->current();
-        if (!$season) {
-            // pas de saison active : on sort
-            return;
+        if ($season) {
+            $post->seasons()->sync([
+                $season->id => [
+                    'admin_id' => Auth::id(),
+                    'date' => now()
+                ]
+            ]);
         }
 
-        // if ($request->has('season')) {
-        $post->seasons()->sync([ // on supprime les anciennes saisons et fais le nouvelle association
-            $season => [
-                'admin_id' => Auth::user()->id,
-                'date'     => now()
-            ]
-        ]);
-        // }
-
-        return redirect()->route('posts.index')
+        return redirect()->route('admin.post.index')
             ->with('success', 'Post updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy($id)
     {
+
+        $post = Post::findOrFail($id);
+
         // Supprimer l'image si elle existe
         if ($post->image) {
             Storage::disk('public')->delete($post->image);
@@ -188,7 +176,7 @@ class PostController extends Controller
         $post->delete();
 
         return redirect()
-            ->route('admin.posts.index')
+            ->route('admin.post.index')
             ->with('success', 'Post deleted succesfully.');
     }
 }
