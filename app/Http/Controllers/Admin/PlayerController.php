@@ -67,7 +67,7 @@ class PlayerController extends Controller
         //
         $player = Player::with('parent')->find($player->id);
         if (!$player) {
-            return redirect()->->with('error', 'Player not found.');
+            return redirect()->with('error', 'Player not found.');
         }
 
         //

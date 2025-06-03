@@ -88,11 +88,11 @@ class Player extends Model
         });
     }
 
-    public function fullName(): Attribute 
+    public function fullName(): Attribute
 	{
 		return Attribute::make(get: fn() => $this->getAttribute('last_name') . ' ' . $this->getAttribute('first_name'));
 	}
 
-    
+
 
 }
