@@ -101,8 +101,7 @@
                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="{{route('admin.registrations.index')}}">List</a></li>
-                        {{-- <li class="pc-item"><a class="pc-link" href="../dashboard/analytics.html">Add</a></li> --}}
+                        <li class="pc-item"><a class="pc-link" href="{{route('admin.registration.index')}}">List</a></li>
                     </ul>
                 </li>
 

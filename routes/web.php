@@ -91,6 +91,9 @@ Route::middleware('auth:admin')
                 Route::get('list', 'index')->name('index');
                 Route::get('archived', 'archived')->name('archived');
                 Route::post('{registration}/archive', 'archive')->name('archive');
+
+                Route::post('{registration}/validate', 'validate')->name('validate');
+                Route::post('{registration}/reject', 'cancel')->name('reject');
             });
 
 
@@ -113,16 +116,16 @@ Route::middleware('auth:admin')
             });
 
 
-        Route::resource('registrations', AdminRegistrationController::class)
-            ->names('registrations');
+        // Route::resource('registrations', AdminRegistrationController::class)
+        //     ->names('registrations');
 
         // Validation → "admin.registrations.validate"
-        Route::post('registrations/{registration}/approve', [AdminRegistrationController::class, 'validate'])
-            ->name('registrations.approve');
-        // Annulation → "admin.registrations.cancel"
+        // Route::post('registrations/{registration}/approve', [AdminRegistrationController::class, 'validate'])
+        //     ->name('registrations.approve');
+        // // Annulation → "admin.registrations.cancel"
 
-        Route::post('registrations/{registration}/reject', [AdminRegistrationController::class, 'cancel'])
-            ->name('registrations.reject');
+        // Route::post('registrations/{registration}/reject', [AdminRegistrationController::class, 'cancel'])
+        //     ->name('registrations.reject');
 
 
 

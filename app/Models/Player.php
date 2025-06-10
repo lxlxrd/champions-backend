@@ -62,7 +62,7 @@ class Player extends Model
      */
     protected static function booted()
     {
-        static::creating(function ($player) {
+        static::creating(function (Player $player) {
             // Appel direct au service
             $service = app(AgeCategoryService::class);
             $category = $service->getCategoryByBirthDay($player->birth_date);
@@ -71,7 +71,7 @@ class Player extends Model
             }
         });
 
-        static::created(function ($player) {
+        static::created(function (Player $player) {
             $season = app(SeasonService::class)->current();
             if (!$season) {
                 // pas de saison active : on sort

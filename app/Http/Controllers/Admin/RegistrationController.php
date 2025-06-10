@@ -20,13 +20,14 @@ class RegistrationController extends Controller
     {
         //  retourne la vue de la liste des joueurs inscrits
         $registrations = Registration::with(['player', 'parent', 'season', 'age_category'])->get();
+        // dd($registrations);
         return view('new.admin.registration.list', compact('registrations'));
     }
 
     public function create()
     {
-        //  retourne la vue du formulaire d'inscription  
-        //  A créer plutard 
+        //  retourne la vue du formulaire d'inscription
+        //  A créer plutard
         $players = Player::all();
         $seasons = Season::all();
         $parents = PlayerParent::all();

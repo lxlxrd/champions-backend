@@ -31,12 +31,6 @@ class AuthenticatedSessionController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        if ($request->boolean('keepLoggedIn')) {
-            config(['session.lifetime' => 43200]); // 30 jours
-        } else {
-            // Expire à la fermeture → pas de changement ici, Laravel crée un cookie sans expiration
-            config(['session.expire_on_close' => true]);
-        }
 
         // 1. Tentative d'authentification dans PlayerParent
         $parent = PlayerParent::where('email', $credentials['email'])->first();
@@ -46,6 +40,14 @@ class AuthenticatedSessionController extends Controller
             $request->session()->regenerate();
 
             $parent->role = 'parent';
+
+            if ($request->boolean('keepLoggedIn')) {
+                config(['session.expire_on_close' => false]); // Le cookie ne sera pas supprimé à la fermeture du navigateur
+                config(['session.lifetime' => 2880]); // 30 jours
+            } else {
+                // Expire à la fermeture → pas de changement ici, Laravel crée un cookie sans expiration
+                config(['session.expire_on_close' => true]);
+            }
 
             return response()->json([
                 'message' => 'Authenticated succefully.',
@@ -63,7 +65,16 @@ class AuthenticatedSessionController extends Controller
             // Auth::shouldUse('admin');
             $request->session()->regenerate();
 
+
             $admin->role = 'admin';
+
+            if ($request->boolean('keepLoggedIn')) {
+                config(['session.expire_on_close' => false]); // Le cookie ne sera pas supprimé à la fermeture du navigateur
+                // config(['session.lifetime' => 2880]); // 30 jours
+            } else {
+                // Expire à la fermeture → pas de changement ici, Laravel crée un cookie sans expiration
+                config(['session.expire_on_close' => true]);
+            }
 
             return response()->json([
                 'message' => 'Authenticated succefully (admin).',
