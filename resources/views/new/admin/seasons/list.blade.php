@@ -106,6 +106,15 @@
                                                     <i class="ti ti-trash f-18"></i>
                                                 </a>
                                             </li>
+
+
+                                            <li class="list-inline-item" data-bs-toggle="tooltip" title="Archive">
+                                                <a href="#" class="avtar avtar-xs btn-link-warning btn-pc-default d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#archiveConfirmationModal" data-id="{{ $season->id }}" data-action="{{ route('admin.season.archive', $season->id) }}">
+                                                    <i class="ti ti-archive f-18"></i>
+                                                </a>
+                                            </li>
+
+
                                         </ul>
                                     </div>
                                 </td>
@@ -166,6 +175,31 @@
                             </div>
                         </div>
 
+
+
+
+                        <!-- Modal pour archive -->
+                        <div class="modal fade" id="archiveConfirmationModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirm Archive</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to archive this season?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <form id="archiveForm" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="active" value="0">
+                                            <button type="submit" class="btn btn-warning">Archive</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
 
 
@@ -374,6 +408,21 @@
             startInput.value = start;
             endInput.value = end;
         }
+    });
+
+</script>
+
+
+
+
+<script>
+    const archiveModal = document.getElementById('archiveConfirmationModal');
+    const archiveForm = document.getElementById('archiveForm');
+
+    archiveModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const action = button.getAttribute('data-action');
+        archiveForm.action = action;
     });
 
 </script>
