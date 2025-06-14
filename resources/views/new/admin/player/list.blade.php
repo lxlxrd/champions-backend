@@ -73,6 +73,7 @@
 
             <div class="card">
 
+
                 <div class="card-body">
                     <div class="dt-responsive">
                         <table id="res-config" class="display table table-striped table-hover dt-responsive nowrap"
@@ -108,34 +109,62 @@
                                                     ? 'bg-teal-400'
                                                     : ($player->preferred_location === 'Bowmanville'
                                                         ? 'bg-orange-500'
-                                                        : 'bg-purple-700
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ') }}  f-12">{{ $player->preferred_location }}</span>
+                                                        : 'bg-purple-700') }}  f-12">{{ $player->preferred_location }}</span>
                                         </td>
 
                                         <td>{{ $player->gender }}</td>
                                         <td>{{ $player->ageCategory->name }}</td>
+
                                         <td class="text-center">
                                             <ul class="list-inline me-auto mb-0">
                                                 <li class="list-inline-item align-bottom" data-bs-toggle="tooltip"
                                                     title="View">
                                                     <a href="#"
-                                                        class="avtar avtar-xs btn-link-secondary btn-pc-default"
-                                                        data-bs-toggle="modal" data-bs-target="#cust-modal">
+                                                        class="avtar avtar-xs btn-link-secondary btn-pc-default btn-show-player"
+                                                        data-bs-toggle="modal" data-bs-target="#playerModal"
+                                                        data-fullname="{{ $player->fullname }}"
+                                                        data-birthdate="{{ $player->birth_date }}"
+                                                        data-parent="{{ optional($player->parent)->fullname ?? '-' }}"
+                                                        data-gender="{{ $player->gender }}"
+                                                        data-jersey="{{ $player->jersey_size }}"
+                                                        data-location="{{ $player->preferred_location }}"
+                                                        data-agecategory="{{ $player->ageCategory->name }}">
                                                         <i class="ti ti-eye f-18"></i>
                                                     </a>
+
                                                 </li>
                                                 <li class="list-inline-item align-bottom" data-bs-toggle="tooltip"
                                                     title="Edit">
-                                                    <a href="../application/ecom_product-add.html"
-                                                        class="avtar avtar-xs btn-link-success btn-pc-default">
+                                                    <a href="#"
+                                                        class="avtar avtar-xs btn-link-success btn-pc-default btn-edit-player"
+                                                        data-bs-toggle="modal" data-bs-target="#editPlayerModal"
+                                                        data-id="{{ $player->id }}"
+                                                        data-firstname="{{ $player->first_name }}"
+                                                        data-lastname="{{ $player->last_name }}"
+                                                        data-birthdate="{{ \Carbon\Carbon::parse($player->birth_date)->format('Y-m-d') }}"
+                                                        data-parent-id="{{ $player->player_parents_id }}"
+                                                        data-parent="{{ optional($player->parent)->fullname ?? '-' }}"
+                                                        data-gender="{{ $player->gender }}"
+                                                        data-jersey="{{ $player->jersey_size }}"
+                                                        data-location="{{ ucfirst(strtolower($player->preferred_location)) }}"
+                                                        data-agecategory-id="{{ $player->age_categories_id }}"
+                                                        data-agecategory="{{ optional($player->ageCategory)->name ?? '-' }}">
                                                         <i class="ti ti-edit-circle f-18"></i>
                                                     </a>
+
+
+
+
                                                 </li>
                                                 <li class="list-inline-item align-bottom" data-bs-toggle="tooltip"
                                                     title="Delete">
-                                                    <a href="#" class="avtar avtar-xs btn-link-danger btn-pc-default">
+                                                    <a href="#"
+                                                        class="avtar avtar-xs btn-link-danger btn-pc-default btn-delete-player"
+                                                        data-bs-toggle="modal" data-bs-target="#deletePlayerModal"
+                                                        data-id="{{ $player->id }}" data-name="{{ $player->fullname }}">
                                                         <i class="ti ti-trash f-18"></i>
                                                     </a>
+
                                                 </li>
                                             </ul>
                                         </td>
@@ -160,7 +189,175 @@
             </div>
         </div>
     </div>
+
+
+
+
+
+
+    {{-- Modal show --}}
+    <!-- Modal : Player Details -->
+    <div class="modal fade" id="playerModal" tabindex="-1" aria-labelledby="playerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Player Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="modal-fullname" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Birth Date</label>
+                                <input type="text" class="form-control" id="modal-birthdate" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Parent</label>
+                                <input type="text" class="form-control" id="modal-parent" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Gender</label>
+                                <input type="text" class="form-control" id="modal-gender" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Jersey Size</label>
+                                <input type="text" class="form-control" id="modal-jersey" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Preferred Location</label>
+                                <input type="text" class="form-control" id="modal-location" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Age Category</label>
+                                <input type="text" class="form-control" id="modal-agecategory" readonly>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    {{-- Modal edit --}}
+    <div class="modal fade" id="editPlayerModal" tabindex="-1" aria-labelledby="editPlayerModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <form method="POST" id="editPlayerForm" action="">
+                @csrf
+                @method('PUT')
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Player</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="edit-player-id" name="id">
+                        <input type="hidden" id="edit-parent-id" name="player_parents_id">
+                        <input type="hidden" id="edit-agecategory-id" name="player_age_category_id">
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="edit-firstname" name="first_name"
+                                    required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="edit-lastname" name="last_name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Birth Date</label>
+                                <input type="date" class="form-control" id="edit-birthdate" name="birth_date"
+                                    required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Parent</label>
+                                <input type="text" class="form-control" id="edit-parent" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Gender</label>
+                                <select class="form-select" id="edit-gender" name="gender" required>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Jersey Size</label>
+                                <input type="text" class="form-control" id="edit-jersey" name="jersey_size" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Preferred Location</label>
+                                <select class="form-select" id="edit-location" name="preferred_location" required>
+                                    <option value="Bowmanville">Bowmanville</option>
+                                    <option value="Courtice">Courtice</option>
+                                    <option value="Newcastle">Newcastle</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Age Category</label>
+                                <input type="text" class="form-control" id="edit-agecategory" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+
+    {{-- Modal de confirmation de supression --}}
+    <div class="modal fade" id="deletePlayerModal" tabindex="-1" aria-labelledby="deletePlayerModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" id="deletePlayerForm" action="">
+                @csrf
+                @method('DELETE')
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete <strong id="delete-player-name"></strong>?</p>
+                        <p class="text-danger mb-0">This action cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Yes, delete</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
+
+
+
+
+
+
+
+
 
 @section('style')
     <link rel="stylesheet" href="{{ asset('new/assets/css/plugins/dataTables.bootstrap5.min.css') }}">
@@ -209,7 +406,7 @@
                 table
                     .column(5).search(gender ? '^' + gender + '$' : '', true, false,
                         true
-                        ) // exact match insensible à la casse                    .column(4).search(location || '') // LOCATION
+                    ) // exact match insensible à la casse                    .column(4).search(location || '') // LOCATION
                     .column(6).search(age_category || '') // AGE CATEGORY
                     .column(4).search(location || '') // LOCATION
                     .column(1).search(birthdate || '') // BIRTHDATE
@@ -227,6 +424,78 @@
         $('#reset-filters').on('click', function() {
             $('#combined-filters-form')[0].reset();
             $('#res-config').DataTable().search('').columns().search('').draw();
+        });
+    </script>
+
+
+    {{-- Modal show --}}
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#playerModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var modal = $(this);
+
+                modal.find('#modal-fullname').val(button.data('fullname'));
+                modal.find('#modal-birthdate').val(button.data('birthdate'));
+                modal.find('#modal-parent').val(button.data('parent'));
+                modal.find('#modal-gender').val(button.data('gender'));
+                modal.find('#modal-jersey').val(button.data('jersey'));
+                modal.find('#modal-location').val(button.data('location'));
+                modal.find('#modal-agecategory').val(button.data('agecategory'));
+            });
+        });
+    </script>
+
+
+
+    {{-- edit  --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#editPlayerModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var modal = $(this);
+
+                var playerId = button.data('id');
+
+                modal.find('#edit-player-id').val(playerId);
+                modal.find('#edit-firstname').val(button.data('firstname'));
+                modal.find('#edit-lastname').val(button.data('lastname'));
+                modal.find('#edit-birthdate').val(button.data('birthdate'));
+                modal.find('#edit-parent-id').val(button.data('parent-id'));
+                modal.find('#edit-parent').val(button.data('parent'));
+                modal.find('#edit-gender').val(button.data('gender'));
+                modal.find('#edit-jersey').val(button.data('jersey'));
+                modal.find('#edit-location').val(button.data('location')).trigger('change');
+                modal.find('#edit-agecategory-id').val(button.data('agecategory-id'));
+                modal.find('#edit-agecategory').val(button.data('agecategory'));
+
+                var actionUrl = `/administration/players/${playerId}`;
+                $('#editPlayerForm').attr('action', actionUrl);
+            });
+        });
+    </script>
+
+
+    {{-- Delete --}}
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#deletePlayerModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var modal = $(this);
+                var playerId = button.data('id');
+                var playerName = button.data('name');
+
+                // Remplir le nom dans le texte
+                modal.find('#delete-player-name').text(playerName);
+
+                // Définir l'action vers la bonne route
+                var actionUrl = `/administration/players/${playerId}`;
+                $('#deletePlayerForm').attr('action', actionUrl);
+            });
         });
     </script>
 @endsection

@@ -102,6 +102,10 @@ Route::middleware('auth:admin')
             ->name('player.')
             ->group(function () {
                 Route::get('list', 'index')->name('index');
+                Route::get('list', 'index')->name('index');
+                Route::put('{id}', 'update')->name('update');
+                Route::delete('/{id}', [AdminPlayerController::class, 'destroy'])
+                    ->name('destroy');
             });
 
 

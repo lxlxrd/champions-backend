@@ -254,12 +254,12 @@
 
 
 
-    // Show 
+    // Show
     const showModal = document.getElementById('showCategoryModal');
     showModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
 
-        // Mise à jour du titre du modal avec le nom de la catégorie 
+        // Mise à jour du titre du modal avec le nom de la catégorie
         // si le nom est  'Adulte' le titre sera 'Détails: Adulte'
         // showCategoryModalLabel id du titre du modal on affecte au texte du titre Deatils: + le nom de la catégorie
         document.getElementById('showCategoryModalLabel').textContent = `Details: ${button.getAttribute('data-name')}`;
