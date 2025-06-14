@@ -79,4 +79,9 @@ class Admin extends Authenticatable
         // $registration->validated_by = null;
         $registration->save();
     }
+
+    // public function fullName(): Attribute
+	// {
+	// 	return Attribute::make(get: fn() => $this->getAttribute('last_name') . ' ' . $this->getAttribute('first_name'));
+	// }
 }

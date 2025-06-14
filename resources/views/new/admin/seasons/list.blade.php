@@ -53,7 +53,9 @@
                         <i class="ti ti-plus"></i> New Season
                     </button>
                 </div>
+
                 <div class="dt-responsive">
+
                     <table id="res-config" class="display table table-striped table-hover dt-responsive nowrap" style="width: 100%">
                         <thead>
                             <tr>
@@ -426,5 +428,7 @@
     });
 
 </script>
+
+
 
 @endsection

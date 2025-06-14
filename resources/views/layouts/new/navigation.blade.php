@@ -7,10 +7,11 @@
 <nav class="pc-sidebar">
     <div class="navbar-wrapper">
         <div class="m-header">
-            <a href="../dashboard/index.html" class="b-brand text-primary">
+            <a href="administration" class="b-brand text-primary">
                 <!-- ========   Change your logo from here   ============ -->
-                <img src="../assets/images/logo-dark.svg" class="img-fluid logo-lg" alt="logo">
-                <span class="badge bg-light-success rounded-pill ms-2 theme-version">v9.0</span>
+                <img src="{{ asset('assets/images/logo-dark.png') }}" class="img-fluid logo-lg" alt="logo" style="max-height: 40px;">
+                <span class="badge bg-light-success rounded-pill ms-2 theme-version">Champions Admin Dashboard</span>
+                {{-- <img src="../assets/images/logo-dark.svg" class="img-fluid logo-lg" alt="logo"> --}}
             </a>
         </div>
         <div class="navbar-content">
@@ -18,10 +19,15 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <span class="avtar bg-green-600 text-white">{{ Str::limit('andom', 1, '') . ' ' . Str::limit('tete%', 1, '') }}</span>
+                            {{-- <span class="avtar bg-green-600 text-white">{{ Str::limit('dom', 1, '') . ' ' . Str::limit('tete%', 1, '') }}</span> --}}
+                            <span class="avtar bg-green-600 text-white">{{ Str::limit(Auth::guard('admin')->user()->name
+                                , 1, '') . ' ' .
+                                Str::limit( Auth::guard('admin')->user()->name
+                                , 1, '') }}</span>
                         </div>
                         <div class="flex-grow-1 ms-3 me-2">
-                            <h6 class="mb-0">Jonh Smith</h6>
+                            <h6 class="mb-0">{{ Auth::guard('admin')->user()->name }}
+                            </h6>
                             <small>Administrator</small>
                         </div>
                         <a class="btn btn-icon btn-link-secondary avtar" data-bs-toggle="collapse" href="#pc_sidebar_userlink">

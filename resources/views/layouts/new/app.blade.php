@@ -17,12 +17,11 @@
     <meta name="author" content="Agence Nationale de Gestion l'Environnement au Togo, ANGE">
     <link rel="icon" href="{{ asset('new/assets/images/logos/favicon.ico') }}" type="image/x-icon">
     <!-- [Font] Family -->
-    @include('layouts.new.linkcss') 
+    @include('layouts.new.linkcss')
     @include('layouts.new.scriptLinkHeader')
 </head>
 
-<body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" data-pc-theme_contrast=""
-    data-pc-theme="light">
+<body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" data-pc-theme_contrast="" data-pc-theme="light">
 
     @include('layouts.new.navigation')
     @include('layouts.new.header')
@@ -39,5 +38,29 @@
     @include('layouts.new.deleteForm')
     @include('layouts.new.scriptLinkFooter')
 </body>
+
+<script>
+    const setCustomPngLogo = () => {
+        const logo = document.querySelector('.b-brand img');
+        if (!logo) return;
+
+        const theme = document.body.getAttribute('data-pc-theme');
+        if (theme === 'dark') {
+            logo.src = "{{ asset('assets/images/logo-white.png') }}";
+        } else {
+            logo.src = "{{ asset('assets/images/logo-dark.png') }}";
+        }
+    };
+
+    window.addEventListener('load', setCustomPngLogo);
+
+    const observer = new MutationObserver(setCustomPngLogo);
+    observer.observe(document.body, {
+        attributes: true
+        , attributeFilter: ['data-pc-theme']
+    });
+
+</script>
+
 
 </html>
