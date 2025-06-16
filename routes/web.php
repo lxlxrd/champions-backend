@@ -91,9 +91,12 @@ Route::middleware('auth:admin')
                 Route::get('list', 'index')->name('index');
                 Route::get('archived', 'archived')->name('archived');
                 Route::post('{registration}/archive', 'archive')->name('archive');
+                Route::put('{id}', 'update')->name('update');
 
                 Route::post('{registration}/validate', 'validate')->name('validate');
                 Route::post('{registration}/reject', 'cancel')->name('reject');
+                Route::delete('/{id}', [AdminRegistrationController::class, 'destroy'])
+                    ->name('destroy');
             });
 
 

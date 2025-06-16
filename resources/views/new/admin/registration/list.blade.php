@@ -89,22 +89,25 @@
                                                     title="View">
                                                     <a href="#"
                                                         class="avtar avtar-xs btn-link-secondary btn-pc-default"
-                                                        data-bs-toggle="modal" data-bs-target="#cust-modal">
+                                                        onclick="showRegistrationModal(
+                                                         '{{ $reg->player->fullname }}',
+                                                         '{{ $reg->parent->fullname ?? '-' }}',
+                                                         '{{ $reg->season->year }}',
+                                                         '{{ $reg->age_category->name }}',
+                                                         '{{ $reg->status }}'
+                                                )">
                                                         <i class="ti ti-eye f-18"></i>
                                                     </a>
+
                                                 </li>
-                                                <li class="list-inline-item align-bottom" data-bs-toggle="tooltip"
-                                                    title="Edit">
-                                                    <a href="../application/ecom_product-add.html"
-                                                        class="avtar avtar-xs btn-link-success btn-pc-default">
-                                                        <i class="ti ti-edit-circle f-18"></i>
-                                                    </a>
-                                                </li>
+
                                                 <li class="list-inline-item align-bottom" data-bs-toggle="tooltip"
                                                     title="Delete">
-                                                    <a href="#" class="avtar avtar-xs btn-link-danger btn-pc-default">
+                                                    <a href="#" class="avtar avtar-xs btn-link-danger btn-pc-default"
+                                                        onclick="confirmDelete('{{ route('admin.registration.destroy', $reg->id) }}')">
                                                         <i class="ti ti-trash f-18"></i>
                                                     </a>
+
                                                 </li>
 
                                                 <li class="list-inline-item align-bottom" data-bs-toggle="tooltip"
@@ -175,8 +178,7 @@
     </div>
 
     <!-- Modal de confirmation pour REJETER -->
-    <div class="modal fade" id="confirmRejectModal" tabindex="-1" aria-labelledby="confirmRejectLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="confirmRejectModal" tabindex="-1" aria-labelledby="confirmRejectLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <form method="POST" id="rejectForm">
@@ -191,6 +193,67 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-danger">Reject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Modal show  -->
+    <div class="modal fade" id="cust-modal" tabindex="-1" aria-labelledby="custModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registration Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Player</dt>
+                        <dd class="col-sm-9" id="modal-player"></dd>
+
+                        <dt class="col-sm-3">Parent</dt>
+                        <dd class="col-sm-9" id="modal-parent"></dd>
+
+                        <dt class="col-sm-3">Season</dt>
+                        <dd class="col-sm-9" id="modal-season"></dd>
+
+                        <dt class="col-sm-3">Age Category</dt>
+                        <dd class="col-sm-9" id="modal-age"></dd>
+
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9" id="modal-status"></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    {{-- Modal de confirmation de delete --}}
+
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" id="deleteForm">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteLabel">Confirm deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to <strong>delete</strong> this registration ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
                     </div>
                 </form>
             </div>
@@ -274,5 +337,35 @@
 
             $('#filters-form select').on('change', applyCombinedFilters);
         });
+    </script>
+
+
+
+
+    {{-- Show  --}}
+
+    <script>
+        function showRegistrationModal(player, parent, season, ageCategory, status) {
+            document.getElementById('modal-player').innerText = player;
+            document.getElementById('modal-parent').innerText = parent;
+            document.getElementById('modal-season').innerText = season;
+            document.getElementById('modal-age').innerText = ageCategory;
+            document.getElementById('modal-status').innerText = status;
+
+            const modal = new bootstrap.Modal(document.getElementById('cust-modal'));
+            modal.show();
+        }
+    </script>
+
+
+    {{-- Delete --}}
+
+    <script>
+        function confirmDelete(actionUrl) {
+            const form = document.getElementById('deleteForm');
+            form.action = actionUrl;
+            const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            modal.show();
+        }
     </script>
 @endsection

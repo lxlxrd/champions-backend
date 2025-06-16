@@ -16,11 +16,12 @@ class RegistrationController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
         //  retourne la vue de la liste des joueurs inscrits
         $registrations = Registration::with(['player', 'parent', 'season', 'age_category'])->get();
-        // dd($registrations);
+        // dd( $registrations );
         return view('new.admin.registration.list', compact('registrations'));
     }
 
@@ -31,16 +32,16 @@ class RegistrationController extends Controller
         $players = Player::all();
         $seasons = Season::all();
         $parents = PlayerParent::all();
-        return view('registrations.create',  compact('players', 'seasons', 'parents'));
+        return view('registrations.create', compact('players', 'seasons', 'parents'));
     }
 
     public function store(Request $request)
     {
         // 1) Validation avec les nouvelles colonnes
         $data = $request->validate([
-            'player_id'        => 'required|exists:players,id',
-            'player_parent_id' => 'required|exists:player_parents,id',
-            'season_id'        => 'required|exists:seasons,id',
+            'player_id' => 'required|exists:players, id',
+            'player_parent_id' => 'required|exists:player_parents, id',
+            'season_id' => 'required|exists:seasons, id',
         ]);
 
         // 2) Récupérer la catégorie d’âge du joueur
@@ -89,4 +90,15 @@ class RegistrationController extends Controller
             ->back()
             ->with('success', 'Registration cancelled succesfully.');
     }
+
+
+    public function destroy($id)
+    {
+        $registration = Registration::findOrFail($id);
+
+        $registration->delete();
+
+        return redirect()->back()->with('success', 'Registration deleted successfully.');
+    }
+
 }
