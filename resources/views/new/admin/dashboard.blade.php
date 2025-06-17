@@ -1,4 +1,4 @@
-@extends('layouts.new.app', [
+{{-- @extends('layouts.new.app', [
 'breadcrumbs' => [['name' => 'Administration', 'url' => 'admin.home'], ['name' => 'Dashboard', 'url' => null]],
 'page_title' => 'Dashboard',
 'head_title' => 'Dashboard',
@@ -763,4 +763,158 @@
         </div>
     </div>
 </div>
+@endsection --}}
+
+
+
+
+
+
+
+
+
+@extends('layouts.new.app', [
+    'breadcrumbs' => [['name' => 'Administration', 'url' => 'admin.home'], ['name' => 'Dashboard', 'url' => null]],
+    'page_title' => 'Dashboard',
+    'head_title' => 'Dashboard',
+])
+
+@section('content')
+    <div class="row">
+        @php
+            $cards = [
+                [
+                    'title' => 'Manage Season',
+                    'url' => route('admin.season.index'),
+                    'svg' => '<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.4" d="M8 2V5M16 2V5M3.5 9.08984H20.5" stroke="#4680FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="#4680FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>',
+                    'value' => $seasonsCount,
+                    'info' => 'Seasons',
+                ],
+                [
+                    'title' => 'Manage Category Age',
+                    'url' => route('admin.age-category.index'),
+                    'svg' => '<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 12H21M3 6H21M3 18H21" stroke="#4680FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>',
+                    'value' => $ageCategories,
+                    'info' => 'Categories',
+                ],
+                [
+                    'title' => 'Manage Registration',
+                    'url' => route('admin.registration.index'),
+                    'svg' => '<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 4H20V20H4V4Z" stroke="#4680FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 10H20" stroke="#4680FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>',
+                    'value' => $pendingRegistrations,
+                    'info' => 'Pending',
+                ],
+                [
+                    'title' => 'Manage Player',
+                    'url' => route('admin.player.index'),
+                    'svg' => '<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="8" r="4" stroke="#4680FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6 20C6 17.3333 9.33333 16 12 16C14.6667 16 18 17.3333 18 20" stroke="#4680FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>',
+                    'value' => $totalPlayers,
+                    'info' => 'Players',
+                ],
+                [
+                    'title' => 'Manage Post',
+                    'url' => route('admin.post.index'),
+                    'svg' => '<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 4H20V20H4V4Z" stroke="#4680FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 10H20" stroke="#4680FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>',
+                    'value' => $galleryPosts + $publicationPosts,
+                    'info' => 'Posts',
+                ],
+            ];
+        @endphp
+
+        @foreach ($cards as $card)
+            <div class="col-md-6 col-xxl-3 mb-3">
+                <a href="{{ $card['url'] }}" class="text-decoration-none">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="avtar avtar-s bg-light-primary">
+                                        {!! $card['svg'] !!}
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">{{ $card['title'] }}</h6>
+                                </div>
+                            </div>
+                            <div class="bg-body p-3 mt-3 rounded">
+                                <div class="mt-3 row align-items-center">
+                                    <div class="col-7">
+                                        {{-- Placeholder for small graph or icon if needed --}}
+                                    </div>
+                                    <div class="col-5 text-end">
+                                        <h5 class="mb-1">{{ $card['value'] }}</h5>
+                                        <p class="text-primary mb-0">{{ $card['info'] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        @endforeach
+    </div>
+
+
+
+
+
+    {{-- Statistique  --}}
+
+    <div class="col-md-12">
+        <div class="page-header-title">
+            <h2 class="mb-0">Statistics</h2>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6 col-xl-3 mb-3">
+            <div class="card social-widget-card bg-primary">
+                <div class="card-body text-center">
+                    <h3 class="text-white m-0">{{ $totalPlayers }}</h3>
+                    <span class="m-t-10 text-white">Total Players</span>
+                    <i class="ti ti-users text-white f-32"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3 mb-3">
+            <div class="card social-widget-card bg-warning">
+                <div class="card-body text-center">
+                    <h3 class="text-white m-0">{{ $pendingRegistrations }}</h3>
+                    <span class="m-t-10 text-white">Pending Registrations</span>
+                    <i class="ti ti-clock text-white f-32"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3 mb-3">
+            <div class="card social-widget-card bg-success">
+                <div class="card-body text-center">
+                    <h3 class="text-white m-0">{{ $approvedRegistrations }}</h3>
+                    <span class="m-t-10 text-white">Approved Registrations</span>
+                    <i class="ti ti-check text-white f-32"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3 mb-3">
+            <div class="card social-widget-card bg-danger">
+                <div class="card-body text-center">
+                    <h3 class="text-white m-0">{{ $rejectedRegistrations }}</h3>
+                    <span class="m-t-10 text-white">Rejected Registrations</span>
+                    <i class="ti ti-x text-white f-32"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
