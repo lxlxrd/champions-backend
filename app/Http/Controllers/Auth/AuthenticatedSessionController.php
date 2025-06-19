@@ -11,101 +11,70 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class AuthenticatedSessionController extends Controller
-{
-    /**
-     * Handle an incoming authentication request.
-     */
-    // public function store(LoginRequest $request): Response
-    // {
-    //     $request->authenticate();
+class AuthenticatedSessionController extends Controller {
 
-    //     $request->session()->regenerate();
+    public function store( LoginRequest $request ): JsonResponse {
+        $credentials = $request->only( 'email', 'password' );
+        $keepLoggedIn = $request->boolean( 'keepLoggedIn' );
 
-    //     return response()->noContent();
-    // }
-
-
-    public function store(LoginRequest $request): JsonResponse
-    {
-
-        $credentials = $request->only('email', 'password');
-
-
-        // 1. Tentative d'authentification dans PlayerParent
-        $parent = PlayerParent::where('email', $credentials['email'])->first();
-
-        if ($parent && Hash::check($credentials['password'], $parent->password)) {
-            $request->authenticateAs('web');
+        // Parent login
+        $parent = PlayerParent::where( 'email', $credentials[ 'email' ] )->first();
+        if ( $parent && Hash::check( $credentials[ 'password' ], $parent->password ) ) {
+            Auth::guard( 'web' )->login( $parent );
             $request->session()->regenerate();
 
-            $parent->role = 'parent';
-
-            if ($request->boolean('keepLoggedIn')) {
-                config(['session.expire_on_close' => false]); // Le cookie ne sera pas supprimé à la fermeture du navigateur
-                config(['session.lifetime' => 2880]); // 30 jours
-            } else {
-                // Expire à la fermeture → pas de changement ici, Laravel crée un cookie sans expiration
-                config(['session.expire_on_close' => true]);
+            $token = null;
+            if ( $keepLoggedIn ) {
+                $token = $parent->createToken( 'spa-token' )->plainTextToken;
             }
 
-            return response()->json([
-                'message' => 'Authenticated succefully.',
-                'role' => $parent->role,
+            return response()->json( [
+                'message' => 'Authenticated successfully.',
+                'role' => 'parent',
                 'redirect' => '/user-dashboard',
                 'user' => $parent,
-            ]);
+                'token' => $token,
+            ] );
         }
 
-        // 2. Sinon : Tentative dans Admin
-        $admin = Admin::where('email', $credentials['email'])->first();
-
-        if ($admin && Hash::check($credentials['password'], $admin->password)) {
-            Auth::guard('admin')->login($admin);
-            // Auth::shouldUse('admin');
+        // Admin login
+        $admin = Admin::where( 'email', $credentials[ 'email' ] )->first();
+        if ( $admin && Hash::check( $credentials[ 'password' ], $admin->password ) ) {
+            Auth::guard( 'admin' )->login( $admin );
             $request->session()->regenerate();
 
-
-            $admin->role = 'admin';
-
-            if ($request->boolean('keepLoggedIn')) {
-                config(['session.expire_on_close' => false]); // Le cookie ne sera pas supprimé à la fermeture du navigateur
-                // config(['session.lifetime' => 2880]); // 30 jours
-            } else {
-                // Expire à la fermeture → pas de changement ici, Laravel crée un cookie sans expiration
-                config(['session.expire_on_close' => true]);
+            $token = null;
+            if ( $keepLoggedIn ) {
+                $token = $admin->createToken( 'spa-token' )->plainTextToken;
             }
 
-            return response()->json([
-                'message' => 'Authenticated succefully (admin).',
-                'redirect' => config('app.url') . '/administration',
-                'user' => $admin,
+            return response()->json( [
+                'message' => 'Authenticated successfully.',
                 'role' => 'admin',
-            ]);
+                'redirect' => config( 'app.url' ) . '/administration',
+                'user' => $admin,
+                'token' => $token,
+            ] );
         }
 
-
-
-        // 3. Échec total
-        return response()->json([
-            'message' => 'Invalids credentials.',
-        ], 401);
+        return response()->json( [
+            'message' => 'Invalid credentials.',
+        ], 401 );
     }
 
-
-
-
-    /**
-     * Destroy an authenticated session.
-     */
-    public function destroy(Request $request): JsonResponse
-    {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return response()->json(['message' => 'Logged out successfully']);
+    public function destroy( Request $request ): JsonResponse {
+        // Supprimer le token seulement s'il existe
+    if ($request->user() && $request->user()->currentAccessToken()) {
+        $request->user()->currentAccessToken()->delete();
     }
+
+    Auth::guard('web')->logout();
+    Auth::guard('admin')->logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return response()->json(['message' => 'Logged out successfully.' ] );
+    }
+
 }

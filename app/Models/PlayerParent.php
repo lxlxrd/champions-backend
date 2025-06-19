@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 class PlayerParent extends Authenticatable
 {
+    use HasApiTokens;
     // Les champs assignables
     protected $fillable = [
         'first_name',

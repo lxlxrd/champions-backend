@@ -4,45 +4,72 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
-class SetSessionLifetimeFromRequest
-{
+class SetSessionLifetimeFromRequest {
     /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
+    * Handle an incoming request.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  \Closure  $next
+    * @return \Symfony\Component\HttpFoundation\Response
+    */
 
+    public function handle( Request $request, Closure $next ) {
+        Log::info( '--- NEW REQUEST ---' );
+        Log::info( 'Request URL: ' . $request->fullUrl() );
+        Log::info( 'Request method: ' . $request->method() );
+        Log::info( 'Session ID: ' . $request->session()->getId() );
+        Log::info( 'Session data BEFORE: ', $request->session()->all() );
 
-    public function handle(Request $request, Closure $next): Response
-    {
-        // Vérifie si le frontend demande une session persistante
-        if ($request->has('keepLoggedIn') && $request->boolean('keepLoggedIn')) {
-            config([
-                'session.lifetime' => 43200, // 30 jours (en minutes)
-                'session.expire_on_close' => false,
-            ]);
-
-            // Recrée manuellement le cookie laravel_session avec durée persistante
-            Cookie::queue(Cookie::make(
-                config('session.cookie'), // nom du cookie (ex: laravel_session)
-                $request->cookie(config('session.cookie')), // valeur actuelle du cookie
-                43200, // ⬅ durée en minutes, pas en secondes !
-                config('session.path', '/'),
-                config('session.domain', null),
-                config('session.secure', true),
-                config('session.http_only', true),
-                false,
-                config('session.same_site', 'lax')
-            ));
+        if ( $request->is( 'login' ) ) {
+            Log::info( 'Request data at login: ', $request->all() );
+            $keepLoggedIn = $request->boolean( 'keepLoggedIn' );
+            $request->session()->put( '_keepLoggedIn', $keepLoggedIn );
         } else {
-            config([
-                'session.expire_on_close' => true, // expire à la fermeture du navigateur
-            ]);
+            $keepLoggedIn = $request->session()->get( '_keepLoggedIn', false );
         }
 
-        return $next($request);
+        // Appliquer les paramètres dynamiques
+        if ( $keepLoggedIn ) {
+            Config::set( 'session.expire_on_close', false );
+            Config::set( 'session.lifetime', 2880 );
+        } else {
+            Config::set( 'session.expire_on_close', true );
+            Config::set( 'session.lifetime', 120 );
+        }
+
+        Log::info( 'Session lifetime for this request: ' . config( 'session.lifetime' ) );
+        Log::info( 'Expire on close: ' . ( config( 'session.expire_on_close' ) ? 'true' : 'false' ) );
+
+        $response = $next( $request );
+
+        // Forcer un cookie laravel_session avec la bonne durée
+        $minutes = $keepLoggedIn ? 2880 : null;
+        // null => cookie de session ( expire à fermeture navigateur )
+
+        $cookie = cookie(
+            config( 'session.cookie' ),
+            $request->session()->getId(),
+            $minutes,
+            config( 'session.path' ),
+            config( 'session.domain' ),
+            config( 'session.secure' ),
+            config( 'session.http_only' ),
+            false,
+            config( 'session.same_site' )
+        );
+
+        $response->headers->setCookie( $cookie );
+
+        Log::info( 'Session data AFTER: ', $request->session()->all() );
+
+        return $response;
     }
+
 }
+

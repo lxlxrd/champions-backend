@@ -13,21 +13,12 @@ use Illuminate\Support\Facades\Route;
 
 
 
-
-
-// Route::get('/check-session', function () {
-//     return [
-//         'web' => Auth::guard('web')->check(),
-//         'admin' => Auth::guard('admin')->check(),
-//         'default' => Auth::check(),
-//     ];
-// });
-
 Route::get('/check-admin', function () {
-    return response()->json([
+     return response()->json([
         'admin' => Auth::guard('admin')->check(),
         'web' => Auth::guard('web')->check(),
-        'user' => Auth::guard('admin')->user(),
+        'default' => Auth::check(), // ce qu’utilise Laravel par défaut sur la requête
+        'user' => Auth::user(),     // utilisateur courant pour ce guard
     ]);
 });
 

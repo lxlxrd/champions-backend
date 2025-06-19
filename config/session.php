@@ -13,8 +13,8 @@ return [
     | incoming requests. Laravel supports a variety of storage options to
     | persist session data. Database storage is a great default choice.
     |
-    | Supported: "file", "cookie", "database", "apc",
-    |            "memcached", "redis", "dynamodb", "array"
+    | Supported: 'file', 'cookie', 'database', 'apc',
+    |            'memcached', 'redis', 'dynamodb', 'array'
     |
     */
 
@@ -32,12 +32,8 @@ return [
     |
     */
 
-    'lifetime' => (int) 2880,
-    // 'lifetime' => (int) env('SESSION_LIFETIME', 120),
-
-    'expire_on_close' =>  false,
-    // 'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
-
+    'lifetime' => env('SESSION_LIFETIME', 120), // 2 heures ( par défaut )
+    'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', true),
     /*
     |--------------------------------------------------------------------------
     | Session Encryption
@@ -201,8 +197,7 @@ return [
     |
     */
 
-    'same_site' => env('lax'),
-    // 'same_site' => env('SESSION_SAME_SITE', 'lax'),
+    'same_site' => env('SESSION_SAME_SITE', 'lax'),
 
     /*
     |--------------------------------------------------------------------------
