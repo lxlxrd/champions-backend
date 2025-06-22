@@ -23,10 +23,10 @@ Route::get('/check-admin', function () {
 });
 
 
-Route::middleware('web')->group(function () {
-    Route::get('admin/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
-});
+// Route::middleware('web')->group(function () {
+//     Route::get('admin/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+//     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+// });
 
 // Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 

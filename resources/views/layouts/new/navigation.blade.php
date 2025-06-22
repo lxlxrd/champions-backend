@@ -9,7 +9,8 @@
         <div class="m-header">
             <a href="administration" class="b-brand text-primary">
                 <!-- ========   Change your logo from here   ============ -->
-                <img src="{{ asset('assets/images/logo-dark.png') }}" class="img-fluid logo-lg" alt="logo" style="max-height: 40px;">
+                <img src="{{ asset('assets/images/logo-dark.png') }}" class="img-fluid logo-lg" alt="logo"
+                    style="max-height: 40px;">
                 <span class="badge bg-light-success rounded-pill ms-2 theme-version">Champions Admin Dashboard</span>
                 {{-- <img src="../assets/images/logo-dark.svg" class="img-fluid logo-lg" alt="logo"> --}}
             </a>
@@ -20,17 +21,18 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
                             {{-- <span class="avtar bg-green-600 text-white">{{ Str::limit('dom', 1, '') . ' ' . Str::limit('tete%', 1, '') }}</span> --}}
-                            <span class="avtar bg-green-600 text-white">{{ Str::limit(Auth::guard('admin')->user()->name
-                                , 1, '') . ' ' .
-                                Str::limit( Auth::guard('admin')->user()->name
-                                , 1, '') }}</span>
+                            <span
+                                class="avtar bg-green-600 text-white">{{ Str::limit(Auth::guard('admin')->user()->first_name, 1, '') .
+                                    ' ' .
+                                    Str::limit(Auth::guard('admin')->user()->last_name, 1, '') }}</span>
                         </div>
                         <div class="flex-grow-1 ms-3 me-2">
-                            <h6 class="mb-0">{{ Auth::guard('admin')->user()->name }}
+                            <h6 class="mb-0">{{ Auth::guard('admin')->user()->fullname }}
                             </h6>
                             <small>Administrator</small>
                         </div>
-                        <a class="btn btn-icon btn-link-secondary avtar" data-bs-toggle="collapse" href="#pc_sidebar_userlink">
+                        <a class="btn btn-icon btn-link-secondary avtar" data-bs-toggle="collapse"
+                            href="#pc_sidebar_userlink">
                             <svg class="pc-icon">
                                 <use xlink:href="#custom-sort-outline"></use>
                             </svg>
@@ -77,7 +79,7 @@
                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="{{route('admin.season.index')}}">List</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('admin.season.index') }}">List</a></li>
                     </ul>
                 </li>
 
@@ -92,7 +94,8 @@
                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="{{route('admin.age-category.index')}}">List</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('admin.age-category.index') }}">List</a>
+                        </li>
                     </ul>
                 </li>
 
@@ -107,7 +110,8 @@
                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="{{route('admin.registration.index')}}">List</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('admin.registration.index') }}">List</a>
+                        </li>
                     </ul>
                 </li>
 
@@ -122,7 +126,7 @@
                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="{{route('admin.player.index')}}">List</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('admin.player.index') }}">List</a></li>
                         {{-- <li class="pc-item"><a class="pc-link" href="../dashboard/analytics.html">Add</a></li> --}}
                     </ul>
                 </li>
@@ -139,7 +143,7 @@
                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="{{route('admin.post.index')}}">List</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('admin.post.index') }}">List</a></li>
                         {{-- <li class="pc-item"><a class="pc-link" href="../dashboard/analytics.html">Add</a></li> --}}
                     </ul>
                 </li>

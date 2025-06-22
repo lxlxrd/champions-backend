@@ -1,80 +1,81 @@
 <?php
 
 namespace App\Models;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Admin extends Authenticatable
-{
+class Admin extends Authenticatable implements MustVerifyEmail{
     use HasApiTokens, Notifiable;
     //
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'phone',
+        'address',
+        'role',
         'email',
         'password',
         'remember_token',
     ];
 
-
-    public function getAuthPassword()
-    {
+    public function getAuthPassword() {
         return $this->password;
     }
-    public function getRememberToken()
-    {
+
+    public function getRememberToken() {
         return $this->remember_token;
     }
-    public function setRememberToken($value)
-    {
+
+    public function setRememberToken( $value ) {
         $this->remember_token = $value;
         $this->save();
     }
-    public function getRememberTokenName()
-    {
+
+    public function getRememberTokenName() {
         return 'remember_token';
     }
-    public function getAuthIdentifierName()
-    {
+
+    public function getAuthIdentifierName() {
         return 'id';
     }
-    public function getAuthIdentifier()
-    {
-        return $this->getAttribute($this->getAuthIdentifierName());
+
+    public function getAuthIdentifier() {
+        return $this->getAttribute( $this->getAuthIdentifierName() );
     }
-    public function getAuthIdentifierValue()
-    {
-        return $this->getAttribute($this->getAuthIdentifierName());
+
+    public function getAuthIdentifierValue() {
+        return $this->getAttribute( $this->getAuthIdentifierName() );
     }
-    public function getAuthIdentifierColumn()
-    {
+
+    public function getAuthIdentifierColumn() {
         return $this->getAuthIdentifierName();
     }
-    public function getAuthIdentifierKey()
-    {
+
+    public function getAuthIdentifierKey() {
         return $this->getKey();
     }
 
-
-    public function ageCategory()
-    {
-        return $this->hasMany(AgeCategory::class);
-    }
-    public function postSeasons()
-    {
-        return $this->hasMany(PostSeason::class);
+    public function ageCategory() {
+        return $this->hasMany( AgeCategory::class );
     }
 
-    public function approve(Registration $registration)
-    {
+    public function postSeasons() {
+        return $this->hasMany( PostSeason::class );
+    }
+
+    public function approve( Registration $registration ) {
         $registration->status = 'approved';
         // $registration->validated_by = $this->id;
         $registration->save();
     }
 
     /**
-     * Annule la validation d'une inscription.
+    * Annule la validation d'une inscription.
      */
     public function reject(Registration $registration)
     {
@@ -83,8 +84,8 @@ class Admin extends Authenticatable
         $registration->save();
     }
 
-    // public function fullName(): Attribute
-	// {
-	// 	return Attribute::make(get: fn() => $this->getAttribute('last_name') . ' ' . $this->getAttribute('first_name'));
-	// }
+    public function fullName(): Attribute
+	{
+		return Attribute::make(get: fn() => $this->getAttribute('first_name') . ' ' . $this->getAttribute('last_name' ) );
+    }
 }
