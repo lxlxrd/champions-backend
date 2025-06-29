@@ -10,11 +10,10 @@ use App\Http\Controllers\Admin\AdminAuthController as AdminAuthController;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
-
+use Illuminate\Support\Facades\URL;
 
 Route::get('/check-admin', function () {
-     return response()->json([
+    return response()->json([
         'admin' => Auth::guard('admin')->check(),
         'web' => Auth::guard('web')->check(),
         'default' => Auth::check(), // ce qu’utilise Laravel par défaut sur la requête
@@ -25,11 +24,37 @@ Route::get('/check-admin', function () {
 
 // Route::middleware('web')->group(function () {
 //     Route::get('admin/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
-//     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 // });
 
 // Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
+
+Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+// Route::post('/admin/login', [AdminAuthController::class, 'login']);
+Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+Route::get('/admin/email/verify', function () {
+    $user = Auth::guard('admin')->user();
+
+    return view('new.admin.verify-email', [
+        'user' => $user,
+        'verification_link' => URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            [
+                'id' => $user->id,
+                'hash' => sha1($user->getEmailForVerification()), // ok
+            ]
+        ),
+        'app_name' => config('app.name'),
+    ]);
+})->middleware('auth:admin')->name('admin.verification.notice');
+
+
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin/create', [AdminAuthController::class, 'form']);
+    Route::post('/admin/create', [AdminAuthController::class, 'store']);
+});
 
 Route::middleware('auth:admin')
     ->prefix('administration')

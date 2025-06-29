@@ -27,8 +27,13 @@ class PlayerParent extends Authenticatable implements MustVerifyEmail {
         return $this->hasMany( Player::class );
     }
 
-    public function fullName(): Attribute
-    {
+    public function fullName(): Attribute {
         return Attribute::make( get: fn() => $this->getAttribute( 'last_name' ) . ' ' . $this->getAttribute( 'first_name' ) );
     }
+
+    public function getEmailForVerification() {
+        return $this->email;
+    }
+
 }
+

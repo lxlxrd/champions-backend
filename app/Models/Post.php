@@ -10,11 +10,11 @@ class Post extends Model
     protected $fillable = [
         'title',
         'type',
-        'content', 
+        'content',
         'image_path'
     ];
 
-    // elle n'a aucune relation  
+    // elle n'a aucune relation
 
     public function seasons()
     {
@@ -25,7 +25,7 @@ class Post extends Model
                 ->using(PostSeason::class)
                 ->withPivot('admin_id', 'date');
     }
-    
+
 
 
     public function postSeasons()

@@ -1,23 +1,50 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-md mx-auto mt-10">
-    <h1 class="text-2xl font-bold mb-6">Login Admin</h1>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
+        <h4 class="text-center f-w-500 mb-3">Login with your email</h4>
+        <form method="POST" action="{{ route('admin.login.submit') }}">
+            @csrf
 
-    <form method="POST" action="{{ route('admin.login.submit') }}">
-        @csrf
+            {{-- Email --}}
+            <div class="form-group mb-3">
+                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                       placeholder="Email Address" value="{{ old('email') }}" required autofocus>
+                @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
-        <div class="mb-4">
-            <label for="email" class="block mb-1">Email</label>
-            <input type="email" name="email" id="email" required class="w-full border border-gray-300 p-2 rounded" value="{{ old('email') }}">
-        </div>
+            {{-- Password --}}
+            <div class="form-group mb-3">
+                <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
+                       placeholder="Password" required>
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
-        <div class="mb-4">
-            <label for="password" class="block mb-1">Password</label>
-            <input type="password" name="password" id="password" required class="w-full border border-gray-300 p-2 rounded">
-        </div>
+            {{-- Remember Me + Forgot --}}
+            <div class="d-flex mt-1 justify-content-between align-items-center">
+                <div class="form-check">
+                    <input class="form-check-input input-primary" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                    <label class="form-check-label text-muted" for="remember">Remember me?</label>
+                </div>
+                <a href="#" class="text-secondary f-w-400 mb-0">Forgot Password?</a>
+            </div>
 
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</button>
-    </form>
+            {{-- Submit --}}
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+
+            {{-- Link to register (si nécessaire plus tard) --}}
+            {{-- <div class="d-flex justify-content-between align-items-end mt-4">
+                <h6 class="f-w-500 mb-0">Don't have an Account?</h6>
+                <a href="#" class="link-primary">Create Account</a>
+            </div> --}}
+        </form>
+    </div>
 </div>
 @endsection

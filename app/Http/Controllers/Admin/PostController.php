@@ -18,17 +18,22 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        // phpinfo();
+        $type = $request->type; // GALERY ou PUBLICATION
+        $seasonId = $request->season_id;
 
-        $type = $request->type; // PUB ou GALLERY
         $files = Storage::disk('public')->files('posts');
-
         $seasons = Season::orderByDesc('year')->get();
+
         $posts = Post::with('seasons')
+            ->when($type, fn($q) => $q->where('type', $type))
+            ->when(
+                $seasonId,
+                fn($q) =>
+                $q->whereHas('seasons', fn($s) => $s->where('seasons.id', $seasonId))
+            )
+            ->paginate(10);
 
-            ->paginate(10);   // <-- pagination
-
-        return view('new.admin.post.list', compact('posts', 'files', 'seasons'));
+        return view('new.admin.posts.list', compact('posts', 'files', 'seasons', 'type', 'seasonId'));
     }
 
     /**
@@ -68,10 +73,12 @@ class PostController extends Controller
         ]);
 
         // Association à la saison courante
+        // dd($season);
         $season = app(SeasonService::class)->current();
+        // dd(Auth::guard('admin')->id());
         if ($season) {
             $post->seasons()->attach($season->id, [
-                'admin_id' => Auth::id(),
+                'admin_id' => Auth::guard('admin')->id(),
                 'date' => now()
             ]);
         }

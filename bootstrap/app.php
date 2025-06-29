@@ -12,8 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(prepend: [
-            \Illuminate\Session\Middleware\StartSession::class,
+        $middleware->web([
+            \App\Http\Middleware\SetSessionLifetimeFromRequest::class,
+            // \Illuminate\Session\Middleware\StartSession::class,
         ]);
         $middleware->api(prepend: [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,

@@ -7,7 +7,7 @@
 <nav class="pc-sidebar">
     <div class="navbar-wrapper">
         <div class="m-header">
-            <a href="administration" class="b-brand text-primary">
+            <a href="{{ route('admin.home') }}" class="b-brand text-primary">
                 <!-- ========   Change your logo from here   ============ -->
                 <img src="{{ asset('assets/images/logo-dark.png') }}" class="img-fluid logo-lg" alt="logo"
                     style="max-height: 40px;">
