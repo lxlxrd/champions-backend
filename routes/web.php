@@ -33,6 +33,21 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name(
 // Route::post('/admin/login', [AdminAuthController::class, 'login']);
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+
+// mot de passe oublié
+Route::get('/forgot-password', function () {
+    return view('admin.auth.forgot-password');
+})->middleware('guest')->name('password.request');
+
+
+// Affiche le formulaire avec le token dans l'URL
+Route::get('/reset-password/{token}', function ($token) {
+    return view('admin.auth.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
+
+
+
 Route::get('/admin/email/verify', function () {
     $user = Auth::guard('admin')->user();
 
@@ -49,6 +64,12 @@ Route::get('/admin/email/verify', function () {
         'app_name' => config('app.name'),
     ]);
 })->middleware('auth:admin')->name('admin.verification.notice');
+
+
+// Patch global pour éviter toute erreur de redirection vers route('login')
+Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
 
 
 Route::middleware(['auth:admin'])->group(function () {

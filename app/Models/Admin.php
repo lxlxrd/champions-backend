@@ -29,16 +29,16 @@ class Admin extends Authenticatable implements MustVerifyEmail
         return $this->password;
     }
 
-    public function getRememberToken()
-    {
-        return $this->remember_token;
-    }
+    // public function getRememberToken()
+    // {
+    //     return $this->remember_token;
+    // }
 
-    public function setRememberToken($value)
-    {
-        $this->remember_token = $value;
-        $this->save();
-    }
+    // public function setRememberToken($value)
+    // {
+    //     $this->remember_token = $value;
+    //     $this->save();
+    // }
 
     public function getRememberTokenName()
     {

@@ -27,14 +27,17 @@ class AdminAuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::guard('admin')->attempt($credentials)) {
+        $remember = $request->filled('remember');
+
+        if (Auth::guard('admin')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
             return redirect()->route('admin.home');
         }
 
+
         return back()->withErrors([
-            'email' => 'Email ou mot de passe incorrect.',
+            'email' => 'Email or password invalid.',
         ])->onlyInput('email');
     }
 

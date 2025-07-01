@@ -54,14 +54,26 @@
                     <input type="text" name="phone" class="form-control" placeholder="Phone" required
                         value="{{ old('phone') }}">
                 </div>
-                <div class="mb-3">
-                    <input type="password" name="password" class="form-control" placeholder="Password" required
-                        autocomplete="new-password">
-                </div>
-                <div class="mb-3">
-                    <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password"
+                {{-- Password --}}
+                <div class="mb-3 position-relative">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Password"
                         required autocomplete="new-password">
+                    <span class="position-absolute top-50 end-0 translate-middle-y pe-3"
+                        onclick="togglePassword('password', 'iconPassword')" style="cursor: pointer;">
+                        <i class="fa fa-eye" id="iconPassword"></i>
+                    </span>
                 </div>
+
+                {{-- Confirm Password --}}
+                <div class="mb-3 position-relative">
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="form-control"
+                        placeholder="Confirm Password" required autocomplete="new-password">
+                    <span class="position-absolute top-50 end-0 translate-middle-y pe-3"
+                        onclick="togglePassword('password_confirmation', 'iconConfirm')" style="cursor: pointer;">
+                        <i class="fa fa-eye" id="iconConfirm"></i>
+                    </span>
+                </div>
+
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Sign up</button>
                 </div>
@@ -69,4 +81,24 @@
 
         </div>
     </div>
+
+
+    {{-- Reveal password --}}
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
+
 @endsection

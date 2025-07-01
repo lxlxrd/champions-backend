@@ -3,8 +3,12 @@
 return [
 
     'defaults' => [
-        'guard' => env( 'AUTH_GUARD', 'web' ),
-        'passwords' => 'parents',
+        // 'guard' => env('AUTH_GUARD', 'web'),
+        // 'passwords' => 'parents',
+
+
+        'guard' => 'admin',
+        'passwords' => 'admins',
     ],
 
     'guards' => [
@@ -47,6 +51,11 @@ return [
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
+        ],
+        'admins' => [
+            'provider' => 'admins',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
         ],
     ],
 
